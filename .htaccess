@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Emisor de facturas"
+AuthUserFile "/home2/galfrano/.htpasswds/public_html/arcotechados/octo/passwd"
+require valid-user
