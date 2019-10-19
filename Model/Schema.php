@@ -8,7 +8,7 @@ class Schema{
 
 	function __construct(Pdoh $pdoh){
 		$this->db = $pdoh;
-		$this->dbDir = __DIR__.'/'.\Config::D.'/';
+		$this->dbDir = __DIR__.'/'.\Configuration\D.'/';
 		is_dir($this->dbDir) ?: $this->writeSchema();}
 
 	private function writeSchema(){

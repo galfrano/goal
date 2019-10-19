@@ -6,7 +6,7 @@ class Entity{
 
 	private $pdoh, $id;
 
-	public $schema, $tn, $rpp = 20;
+	public $schema, $tn, $rpp = 20, $columns = '*';
 
 	function __construct($table){
 		$this->tn = $table;
@@ -25,7 +25,7 @@ class Entity{
 		return is_numeric($page) ? ' limit '.(($this->rpp*$page)-$this->rpp).', '.$this->rpp : '' ;}
 
 	function get($id, $children = [], $default = true){
-		$lines = $this->db->query('select * from '.$this->tn.' where '.$this->schema['pk'].'=?', [$id])->fetchAll();
+		$lines = $this->db->query('select '.$this->columns.' from '.$this->tn.' where '.$this->schema['pk'].'=?', [$id])->fetchAll();
 		$data = count($lines) ? current($lines) : false;
 		if(count($children) && $data){
 			foreach($children as $child){

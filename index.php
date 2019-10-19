@@ -15,7 +15,7 @@ spl_autoload_register(function($className){
 	$path = __DIR__.DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, $className).'.php';
 	if(is_file($path)){
 		include_once($path);}
-	elseif(strpos($className, 'ontroller')){
+	elseif(!is_bool(strpos($className, 'Controller'))){
 		include_once(__DIR__.DIRECTORY_SEPARATOR.'Controller/CrudController.php');
 		class_alias('Controller\CrudController', $className);}});
 

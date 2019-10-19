@@ -18,3 +18,4 @@ input[type="date"]{width:150px;}
 .print{float:right;}
 .pager a.active{color:#888;}
 #actions a{margin:0 10px;}
+th{text-align: center;}

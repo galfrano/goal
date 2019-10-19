@@ -1,4 +1,5 @@
 <?php
+//example of custom controller
 namespace Controller;
 use View\InvoiceView;
 use Model\Entity;

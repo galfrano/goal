@@ -113,7 +113,7 @@ class CrudView extends AbstractView{
 			$tr = $table->tr();
 			$tr->th()->say($th);
 			if(!key_exists($th, $catalogs)){
-				$tr->td()->input(['name'=>$th, 'class'=>'form-control']+$this->typeAttributes($types[$th])+($th == $entity->pk ? ['disabled'=>1] : []), true);}
+				$tr->td()->child(self::field($th, $types[$th])+($th == $entity->pk ? ['disabled'=>1] : []));}
 			else{
 				$select = $tr->td()->select(['name'=>$th]);
 				foreach($catalogs[$th] as $id=>$name){
@@ -123,10 +123,24 @@ class CrudView extends AbstractView{
 	protected static function camel($field){
 		return str_replace(' ', '', ucwords(str_replace('_', ' ', $field)));}
 
+	protected static function field($name, $type){
+		$attributes = $type === 'text' ? ['textarea'] : ['input'] ;
+		$attributes += ['name'=>$name, 'class'=>'form-control'];
+		if(substr($type, 0, 3) == 'int'){
+			for($digits = str_replace(['int(', ')', ' unsigned'], '', $type), $max = 1; $digits--; $max *= 10);
+			$attributes += ['type'=>'number', 'min'=>0, 'max'=>$max-1];}
+		elseif($type === 'varchar(60)'){
+			$attributes += ['type'=>'password'];}
+		else{
+			$attributes += $type == 'date' ? ['type'=>'date'] : ['type'=>'text'] ;}
+		return $attributes;}
+
 	protected function typeAttributes($type){//remove styles
 		if(substr($type, 0, 3) == 'int'){
 			for($digits = str_replace(['int(', ')', ' unsigned'], '', $type), $max = 1; $digits--; $max *= 10);
 			$attributes = ['type'=>'number', 'min'=>0, 'max'=>$max-1];}
+		elseif($type == 'text'){
+			$attributes = [0 =>'textarea'];}
 		else{
 			$attributes = $type == 'date' ? ['type'=>'date'] : ['type'=>'text'] ;}
 		return $attributes;}}

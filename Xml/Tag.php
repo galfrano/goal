@@ -4,22 +4,18 @@ namespace Xml;
 
 class Tag{
 
-//	protected 
-public $tag, $attributes, $extra = '';
+	protected  $tag, $attributes, $extra = '';
 
 	protected $children = [], $callbacks = ['parent'=>false];
 
-//	private 
-static $single = ['img', 'meta', 'input', 'link', 'hr', 'br', '!doctype'], $unique = ['html', 'body', 'head'], $tab = 0, $ids = [], $names = [], $tpl = [], $language;
+	static $single = ['img', 'meta', 'input', 'link', 'hr', 'br', '!doctype'], $unique = ['html', 'body', 'head'], $tab = 0, $ids = [], $names = [], $tpl = [], $language;
 
 	function __construct($tag, $parent = false){
 		!$parent ?: $this->callbacks['parent'] = $parent;
-		!is_null(self::$language) ?: self::$language = include __DIR__.'/../lang.'.\Config::LANG.'.php';
+		!is_null(self::$language) ?: self::$language = include \Configuration\LANG;
 		list($this->tag, $this->attributes) =  is_array($tag) ? [array_shift($tag), $tag] : [$tag, []] ;
 		empty($tag['id']) || isset(static::$ids[$tag['id']]) ?: static::$ids[$tag['id']] = $this;
-		empty($tag['name']) || isset(static::$names[$tag['name']]) ?: static::$names[$tag['name']] = $this;
-//		empty($tag['data-tpl']) || isset(static::$tpl[$tag['data-tpl']]) ?: static::$tpl[$tag['data-tpl']] = $this;
-}
+		empty($tag['name']) || isset(static::$names[$tag['name']]) ?: static::$names[$tag['name']] = $this;}
 
 	function __clone(){
 		$children = $this->children;
@@ -143,7 +139,7 @@ static $single = ['img', 'meta', 'input', 'link', 'hr', 'br', '!doctype'], $uniq
 		return $this;}
 
 	function format($text){
-		return !key_exists('data-format', $this->attributes) ? $text : \Config::format($this->attributes['data-format'], $text);}
+		return !key_exists('data-format', $this->attributes) ? $text : \Configuration\format($this->attributes['data-format'], $text);}
 
 	function populate($population){//maybe allow method chaining
 		foreach($population as $name => $value){

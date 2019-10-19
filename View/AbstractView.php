@@ -7,8 +7,11 @@ abstract class AbstractView implements ViewInterface{
 	protected $html, $doctype, $dom;
 
 	public function __construct($tpl = false){
-		is_string($tpl) ?: $tpl = \Config::TPL;
-		list($this->doctype, $this->html) = Loader::tags(file_get_contents($tpl));}
+		is_string($tpl) ?: $tpl = \Configuration\TPL;
+		list($this->doctype, $this->html) = Loader::tags(file_get_contents(\Configuration\PATH.'/View/html/'.$tpl.'.html'));}
+
+	protected static function template($template){
+		return current(Loader::tags(file_get_contents(\Configuration\PATH.'/View/html/'.$template.'.html')));}
 
 	public function output(){
 		echo $this->doctype, $this->html;}
@@ -20,7 +23,7 @@ abstract class AbstractView implements ViewInterface{
 		return $get;}
 
 	protected function menuBar(){
-		$sections = \Config::$sections;
+		$sections = [];
 		$bar = new Tag(['div', 'class'=>'topbar']);
 		$menu = $bar->div();
 		for($x = 0, $c = count($sections); $x<$c; $menu->a(['href'=>'?section='.$sections[$x]])->say($sections[$x++]));

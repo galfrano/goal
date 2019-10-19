@@ -10,8 +10,8 @@ class Pdoh{
 	protected static $pdo = [];
 
 	function __construct(){
-		key_exists(\Config::D, self::$pdo) ?: self::$pdo[\Config::D] = new \PDO('mysql:host='.\Config::H.';dbname='.\Config::D, \Config::U, \Config::P);
-		$this->dbi = \Config::D;}
+		key_exists(\Configuration\D, self::$pdo) ?: self::$pdo[\Configuration\D] = new \PDO('mysql:host='.\Configuration\H.';dbname='.\Configuration\D, \Configuration\U, \Configuration\P);
+		$this->dbi = \Configuration\D;}
 
 	//throws exception
 	protected static function kill($stmt, $tokens = []){

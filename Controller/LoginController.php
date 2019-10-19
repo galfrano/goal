@@ -1,10 +1,10 @@
 <?php
 namespace Controller;
 use Model\Entity;
-use Helper\View;
+use View\UserView as View;
 class LoginController{
 
-	protected $entity, $table = 'customers';
+	protected $entity, $table = 'users';
 
 	function __construct(){
 		$this->entity = new Entity($this->table);
@@ -12,5 +12,6 @@ class LoginController{
 		$this->notLoggedIn();}
 
 	function notLoggedIn(){
-		$this->view->showLoginForm();
+//		$this->view->showSignUpForm()->output();
+		$this->view->showLoginForm()->output();
 		exit;}}
