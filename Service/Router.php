@@ -2,26 +2,31 @@
 
 namespace Service;
 
-use Controller\CrudController;
+//use Controller\CrudController;
+use Controller\CrudController2 as CrudController;
 use Controller\LoginController;
 
 class Router{
-	protected $paths = ['crud', ];
+	protected static $controllers = ['crud'=>'CrudController2'];
 	private $user;
 	function __construct($path){
-		$this->user = User::i();
-		$this->isLoggedIn();
-		$this->section();}
+		$this->user = User::i()->getSession();
+		!$this->user && new LoginController;
+		$this->section($path);}
 
-	function isLoggedIn(){
-		return is_null($this->user) || 1 ? new LoginController : false ;
+//'crud/users/4/edit/35'
+	function section($path){
+		if($path[0] === 'crud' && $path[1] === 'users' ){
+			new CrudController('users', [@$path[2], @$path[3], @$path[4]]);}
+	else{var_dump($path);}
+
+//		var_dump($this->user, $path);
+//		die('logged in');
+		
 }
 
-	function section(){
-		
-		//is_null($this->user) ? $this->login
-		
-}
+//	function processPath($path){
+//		empty($path[0]) || empty(self::$controllers[$path[0]]) }
 
 	function getPath(){
 		}

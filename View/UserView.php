@@ -9,10 +9,10 @@ class UserView extends AbstractView{
 		$this->html->get('body')->text($tpl);
 		return $this;}
 
-	function showLoginForm(){
+	function showLoginForm($error){
 		$tpl = self::template('login');
+		$error && $tpl->get(['id'=>'loginError'])->say('login_error');
 		$tpl->get(['id'=>'submit'])->button(['class'=>'btn-success'])->say('login');
-//var_dump($this->html);die;
 		$this->html->get('body')->text($tpl);
 		return $this;}
 }

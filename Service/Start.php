@@ -7,5 +7,5 @@ session_start();
 include(dirname(__DIR__).'/Configuration/Main.php');
 
 function Start(){
-		new Router(array_filter(explode('/', $_SERVER['REQUEST_URI']), function($folder){
-			return $folder && $folder !== 'goal';}));}
+		new Router(array_values(array_filter(explode('/', $_SERVER['REQUEST_URI']), function($folder){
+			return $folder && $folder !== 'goal';})));}

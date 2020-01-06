@@ -25,7 +25,8 @@ class Entity{
 		return is_numeric($page) ? ' limit '.(($this->rpp*$page)-$this->rpp).', '.$this->rpp : '' ;}
 
 	function get($id, $children = [], $default = true){
-		$lines = $this->db->query('select '.$this->columns.' from '.$this->tn.' where '.$this->schema['pk'].'=?', [$id])->fetchAll();
+		$query = 'select '.$this->columns.' from '.$this->tn.(is_array($id) ? $this->filters($id) : ' where '.$this->schema['pk'].'=?');
+		$lines = $this->db->query($query, $id)->fetchAll();
 		$data = count($lines) ? current($lines) : false;
 		if(count($children) && $data){
 			foreach($children as $child){
@@ -47,7 +48,7 @@ class Entity{
 	function child($childName){
 		return empty($this->schema['children'][$childName]) ?: new self($childName);}
 
-	function filters(&$filters){
+	protected function filters(&$filters){
 		$where = [];
 		foreach($filters as $field=>$value){
 			!key_exists($field, $this->schema['columns']) ?: $where[] = $field;}
@@ -92,13 +93,13 @@ class Entity{
 				foreach($post[$camel] as $id => $record){
 					$id<0 ? $childEntity->delete($record[$childPK]) : (empty($record[$childPK]) ? $childEntity->add($record+$rel) : $childEntity->edit($record+$rel, $record[$childPK]));}}}}
 
-	function getParents(){//FIXME!!!!
+	function getParents(){//FIXME!!!! (workaround for catalog: first column filled on trigger)
 		$parents = [];
 		foreach($this->schema['parents'] as $column => $parent){
 			$parents[$column] = (new Entity(key($parent)))->catalog();}
 		return $parents;}
 
-	function catalog(){
+	function catalog(){//TODO optional filter for lists (create requires all)
 		return $this->db->query('select * from '.$this->tn)->fetchAll(function($row){
 			return [$row[$this->schema['pk']]=>current($row)];});}
 

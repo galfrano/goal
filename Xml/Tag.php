@@ -100,7 +100,7 @@ class Tag{
 			$property = $attribute.'s';
 			static::$$property[$value] = $this;}}
 
-	function children(){
+	/*private?*/ function children(){
 		list($nl, $string) = [false, ''];
 		self::$tab++;
 		foreach($this->children as $child){

@@ -1,13 +1,58 @@
 TODO:
+version 3
 * ajax pre-selector
+	FIXME!!:
+* check for "id" string
+version 2
 * generic printing
 * csv export
 * textarea
+* password type
 * reports
 * file manager
 * search
-FIXME!!
-* check for "id" string
-* catalog!!!!!!!!!!!!
-
 small todo's
+
+
+Architecture overview
+
+* public/ index.php, css/*, script.js
+	obviously, entry point, public files.
+* Service/Router
+	checks authentication, takes only first part of the path to start a controller and forwards the rest of it to initialize it.
+* Service/User
+	layer above Entity(user), handles session and crud. // TODO: consider extending Entity and passing the rest of the functionality to login controller
+* Service/Rest
+	for external connections, not a priority for now.
+* Service/FileManager
+	its use is mostly for Model/dbname/
+*
+
+
+
+Specific implementation overview
+
+*** ROUTING ***
+
+- CRUD
+crud/users/page/1 									(read - prepare delete)
+p crud/users/page/4/ -> crud/users/page/4/ 			(delete)
+crud/users/page/1/new/ 								(read empty - prepare create)
+crud/users/page/4/edit/35 							(read one - prepare edit)
+p crud/users/page/1/new/ -> crud/users/page/4 		(create)
+p crud/users/page/4/edit/35 -> crud/users/edit/35 	(edit)
+
+- SALESREP (security, ownership)
+sales/customers (owner's crud)
+sales/invoices (owner's cr) one category
+
+- ADMIN
+admin/reports/view/sales/20200115-20201131	(view name, dates/filters)
+admin/product-price-categories (crud)
+admin/products (product -prices crud)
+admin/inbound (inbound crud)
+admin/invoices (invoice crud)
+admin/warehouses (custom controller)
+admin/cancel
+
+
