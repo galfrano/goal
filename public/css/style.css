@@ -19,3 +19,4 @@ input[type="date"]{width:150px;}
 .pager a.active{color:#888;}
 #actions a{margin:0 10px;}
 th{text-align: center;}
+.actions form{display:inline-block;}

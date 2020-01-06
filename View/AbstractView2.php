@@ -16,14 +16,12 @@ abstract class AbstractView2 implements ViewInterface{
 	public function output(){
 		echo $this->doctype, $this->html;}
 
-	public static function getUrl($part = false, $replace = false){
-		if(!empty($part) && !empty($i = static::$urlMap[$part])){
-//			var_dump($_SERVER); die;
-			$parts = array_values(array_filter(explode('/', $_SERVER['REQUEST_URI'])));
-			$parts[$i] = $replace;
-			return '/'.implode('/', array_filter($parts)).'/';}
-		else{
-			return '/'.$_SERVER['REQUEST_URI'].'/';}}
+	public static function getUrl($paths = [], $replace = []){
+		$parts = array_values(array_filter(explode('/', $_SERVER['REQUEST_URI'])));
+		foreach($paths as $key => $path){
+			if(!empty($path) && !empty($i = static::$urlMap[$path])){
+				$parts[$i] = $replace[$key];}}
+		return '/'.implode('/', array_filter($parts)).'/';}
 
 	protected function menuBar($sections = [], $path = '/'){
 		$bar = new Tag(['div', 'class'=>'topbar']);

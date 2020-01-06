@@ -5,7 +5,6 @@ class UserView extends AbstractView{
 	function showSignUpForm(){
 		$tpl = self::template('login');
 		$tpl->get(['id'=>'submit'])->button(['class'=>'btn-success'])->say('sign_up');
-
 		$this->html->get('body')->text($tpl);
 		return $this;}
 

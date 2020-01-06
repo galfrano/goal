@@ -21,11 +21,14 @@ interface Controller{
 
 /*abstract*/ class CrudController2{
 	protected static $actions = ['edit', 'delete', 'new'];
+	protected static $children = [];
 	protected $table, $page, $action, $id;
-	protected $entity, $view;
+	protected $entity, $view, $childrenList = [];
 
 	function __construct($table, $path = []){
 		$this->entity = new Entity($table);
+		if(key_exists($table, static::$children)){
+			$this->childrenList = static::$children[$table];}
 		$this->view = new CrudView;
 		$this->setPath($path);
 		!empty($_POST) ? $this->post($_POST) : $this->get();}
@@ -42,9 +45,9 @@ interface Controller{
 		if(!$this->action){
 			$this->view->showList($this->entity, $this->page)->output();}
 		elseif($this->action === 'new'){
-			$this->view->showCreateForm($this->entity)->output();}
+			$this->view->showCreateForm($this->entity, $this->childrenList)->output();}
 		elseif($this->action === 'edit' && $this->id){
-			$this->view->showUpdateForm($this->entity, $this->id)->output();}}
+			$this->view->showUpdateForm($this->entity, $this->id, $this->childrenList)->output();}}
 
 	// handles delete, new, update
 	protected function post($post){
@@ -52,7 +55,9 @@ interface Controller{
 			$this->entity->add($post);}
 		elseif($this->action === 'edit' && $this->id){
 			$this->entity->edit($post, $this->id);}
-		header('location: '.CrudView::getUrl('action'));}
+		elseif($this->action === 'delete' && $this->id){
+			$this->entity->delete($this->id);}
+		header('location: '.CrudView::getUrl(['action', 'id'], ['', '']));}
 }
 
 /*
