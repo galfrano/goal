@@ -22,6 +22,8 @@ interface Controller{
 /*abstract*/ class CrudController2{
 	protected static $actions = ['edit', 'delete', 'new'];
 	protected static $children = [];
+	protected static $sections = [];
+	protected static $path = '/';
 	protected $table, $page, $action, $id;
 	protected $entity, $view, $childrenList = [];
 
@@ -29,7 +31,7 @@ interface Controller{
 		$this->entity = new Entity($table);
 		if(key_exists($table, static::$children)){
 			$this->childrenList = static::$children[$table];}
-		$this->view = new CrudView;
+		$this->view = new CrudView(static::$sections, static::$path);
 		$this->setPath($path);
 		!empty($_POST) ? $this->post($_POST) : $this->get();}
 

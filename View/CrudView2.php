@@ -9,7 +9,7 @@ class CrudView2 extends AbstractView2{
 
 	function __construct($sections = [], $path = '/'){
 		parent::__construct();
-		$this->menuBar($sections = [], $path = '/');}
+		$this->menuBar($sections, $path);}
 
 	function showList($entity, $page = 1, $search = []){
 		$div = $this->html->get('body')->div(['class'=>'wrapper']);
@@ -119,12 +119,12 @@ class CrudView2 extends AbstractView2{
 			if(substr($types[$th], 0, 4) === 'enum'){
 				$cell = $tr->td();
 				self::radios($cell, $th, $types[$th]);}
-			else if(!key_exists($th, $catalogs)){
-				$tr->td()->child(self::field($th, $types[$th])+($th == $entity->pk ? ['disabled'=>1] : []));}
-			else{
+			elseif(key_exists($th, $catalogs)){
 				$select = $tr->td()->select(['name'=>$th]);
 				foreach($catalogs[$th] as $id=>$name){
-					$select->option(['value'=>$id])->text($name);}}}
+					$select->option(['value'=>$id])->text($name);}}
+			elseif($types[$th] !== 'timestamp'){
+				$tr->td()->child(self::field($th, $types[$th])+($th == $entity->pk ? ['disabled'=>1] : []));}}
 		return $div;}
 
 	protected static function radios(&$cell, $name, $type){//asumption: enum('val1','val2') //TODO: correct pass by reference

@@ -1,6 +1,8 @@
 <?php
 
-include('config.php');
+include(__DIR__.'/Configuration/Constants.php');
+include(__DIR__.'/Model/Pdoh.php');
+include(__DIR__.'/Model/Schema.php');
 class FileManager{
 
 	static function delete($dirName){
@@ -9,4 +11,5 @@ class FileManager{
 
 
 if(!empty($argv[1])){
-	FileManager::delete('./Model/'.\Config::D);}
+	FileManager::delete('./Model/'.\Configuration\D);
+	new Model\Schema(new Model\Pdoh());}

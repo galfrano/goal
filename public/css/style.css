@@ -12,7 +12,7 @@ input.form-control{height:25px;}
 select{color:#000;}
 input{max-width:500px;}
 input[type="number"]{width:100px;}
-input[type="date"]{width:150px;}
+input.form-control[type="date"]{width:150px; line-height:15px;}
 #extra{display:none;}
 .del{display:none;}
 .print{float:right;}

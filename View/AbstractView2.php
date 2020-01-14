@@ -26,7 +26,7 @@ abstract class AbstractView2 implements ViewInterface{
 	protected function menuBar($sections = [], $path = '/'){
 		$bar = new Tag(['div', 'class'=>'topbar']);
 		$menu = $bar->div();
-		for($x = 0, $c = count($sections); $x<$c; $menu->a(['href'=>$path.$sections[$x]])->say($sections[$x++]));
+		for($x = 0, $c = count($sections); $x<$c; $menu->a(['href'=>$path.$sections[$x].'/1'])->say($sections[$x++]));
 		$this->html->get('body')->text($bar);}
 
 	public function addOn($id, $buttons){
