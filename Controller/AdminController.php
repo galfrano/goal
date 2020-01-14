@@ -2,7 +2,7 @@
 
 namespace Controller;
 
-class AdminController extends CrudController2{
+class AdminController extends CrudController{
 	protected static $entities = ['categories', 'users', 'products', 'customers', 'warehouses', 'inbound', 'invoices'];
 	protected static $children = ['products'=>['prices'], 'invoices'=>['invoice_lines']];
 	protected static $sections = ['categories', 'users', 'products', 'customers', 'warehouses', 'inbound', 'invoices'];

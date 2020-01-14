@@ -1,4 +1,5 @@
-AuthType Basic
-AuthName "Emisor de facturas"
-AuthUserFile "/home2/galfrano/.htpasswds/public_html/arcotechados/octo/passwd"
-require valid-user
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+#example path with subfolder
+RewriteRule ^(.*)$ /dario/index.php?path=$1 [NC,L,QSA]

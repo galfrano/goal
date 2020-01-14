@@ -38,5 +38,5 @@ class Schema{
 		return $parents;}
 
 	function __get($name){
-		is_file($file = $this->dbDir.$name.'.php') or die('no such file');
+		is_file($file = $this->dbDir.$name.'.php') or die('no such file ('.$name.')');
 		return include $file;}}

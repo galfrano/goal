@@ -5,28 +5,39 @@ use \Xml\Tag;
 abstract class AbstractView implements ViewInterface{
 
 	protected $html, $doctype, $dom;
-
+	protected static $urlMap;
 	public function __construct($tpl = false){
 		is_string($tpl) ?: $tpl = \Configuration\TPL;
-		list($this->doctype, $this->html) = Loader::tags(file_get_contents(\Configuration\PATH.'/View/html/'.$tpl.'.html'));}
+		list($this->doctype, $this->html) = Loader::tags(file_get_contents(\APP_PATH.'/View/html/'.$tpl.'.html'));}
 
 	protected static function template($template){
-		return current(Loader::tags(file_get_contents(\Configuration\PATH.'/View/html/'.$template.'.html')));}
+		return current(Loader::tags(file_get_contents(\APP_PATH.'/View/html/'.$template.'.html')));}
 
 	public function output(){
+		\MAIN_URL === '/' ?: $this->setAssetsPath();
 		echo $this->doctype, $this->html;}
 
-	public static function getUrl($remove = false){
-		$get = '?';
-		foreach($_GET as $k => $v){
-			$remove == $k ?: $get .= $k.'='.$v.'&';}
-		return $get;}
+	protected function setAssetsPath(){
+		$head = $this->html->get('head');
+		foreach($head->find('link') as &$link){
+			$link->href = \MAIN_URL.$link->href;}
+		foreach($head->find('script') as &$script){
+			$script->src = \MAIN_URL.$script->src;}}
 
-	protected function menuBar(){
-		$sections = [];
+	public static function getUrl($paths = [], $replace = []){
+		$remove = array_filter(explode('/', \MAIN_URL));
+		$parts = array_values(array_filter(explode('/', $_SERVER['REQUEST_URI']), function($part) use($remove){
+			return !empty($part) && !in_array($part, $remove, true);}));
+		foreach($paths as $key => $path){
+			if(!empty($path) && !empty($i = static::$urlMap[$path])){
+				$parts[$i] = $replace[$key];}}
+		return \MAIN_URL.'/'.implode('/', array_filter($parts)).'/';}
+
+	protected function menuBar($sections = [], $path = '/'){
 		$bar = new Tag(['div', 'class'=>'topbar']);
 		$menu = $bar->div();
-		for($x = 0, $c = count($sections); $x<$c; $menu->a(['href'=>'?section='.$sections[$x]])->say($sections[$x++]));
+		$bar->div()->form(['method'=>'post'])->button(['name'=>'logout', 'value'=>1, 'class'=>'btn btn-warning'])->say('logout');
+		for($x = 0, $c = count($sections); $x<$c; $menu->a(['href'=>\MAIN_URL.$path.$sections[$x].'/1'])->say($sections[$x++]));
 		$this->html->get('body')->text($bar);}
 
 	public function addOn($id, $buttons){

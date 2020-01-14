@@ -32,7 +32,7 @@ class Tag{
 		static::$names[$this->attributes['name']] = $this;}
 
 	function __get($tag){
-		return $this->find($tag);}
+		return empty($this->attributes[$tag]) ? $this->find($tag): $this->attributes[$tag] ;}
 
 /*	function __unset($name){
 		unset($this->attributes[$name]);}*/

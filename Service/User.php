@@ -21,7 +21,9 @@ class User /*implements UserInterface*/{
 	private static function entity(){
 		return is_null(self::$entity) ? (self::$entity = new Entity(self::$table)) : self::$entity;}
 
-	static function getSession(){
+	static function getSession($logout = false){
+		if($logout){
+			self::logout();}
 		return empty($_SESSION[self::$sessionKey]) ? false : $_SESSION[self::$sessionKey];}
 
 	static function authenticate($username, $password){

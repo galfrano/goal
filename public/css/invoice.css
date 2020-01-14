@@ -14,6 +14,6 @@ h2, h3{margin:0;}
 #invoice table{border:solid 1px #CCC;}
 #invoice td{font-size:12px; padding:0 10px;}
 #total{text-align:right;}
-#total table{display:inline-block; border-spacing:6px; margin-top:70px;}
+#total table{display:inline-block; border-spacing:6px; margin-top:70px; margin-bottom:30px;}
 #total h2 span{display:inline-block; margin-left:35px;}
 .footer{position:fixed; bottom:10px;}

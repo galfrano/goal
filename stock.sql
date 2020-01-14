@@ -2,13 +2,13 @@ create table products(
   name varchar(127) not null,
   id int(11) not null auto_increment,
     primary key(id)
-);
+) engine=innodb default charset=utf8;
 
 create table categories(
   name varchar(127) not null,
   id int(11) not null auto_increment,
     primary key(id)
-);
+) engine=innodb default charset=utf8;
 
 create table users(
   email varchar(31) not null,
@@ -17,7 +17,7 @@ create table users(
   role enum('Sales Representative', 'Administrator') not null default 'Sales Representative',
   id int(11) not null auto_increment,
     primary key(id)
-);
+) engine=innodb default charset=utf8;
 
 create table customers(
   name varchar(127) not null,
@@ -30,7 +30,7 @@ create table customers(
     foreign key(user) references users(id),
   id int(11) not null auto_increment,
     primary key(id)
-);
+) engine=innodb default charset=utf8;
 
 create table prices(
   product int(11) not null,
@@ -41,13 +41,13 @@ create table prices(
   price float(7,2) not null,
   id int(11) not null auto_increment,
     primary key(id)
-);
+) engine=innodb default charset=utf8;
 
 create table warehouses(
   name varchar(127) not null,
     id int(11) not null auto_increment,
     primary key(id)
-);
+) engine=innodb default charset=utf8;
 
 
 create table inbound(
@@ -62,7 +62,7 @@ create table inbound(
   unitary_price float(7,2) null,
   id int(11) not null auto_increment,
     primary key(id)
-);
+) engine=innodb default charset=utf8;
 
 
 
@@ -76,7 +76,7 @@ create table invoices(
    foreign key(warehouse) references warehouses(id),
   id int(11) not null auto_increment,
     primary key(id)
-);
+) engine=innodb default charset=utf8;
 
 
 create table invoice_lines(
@@ -87,7 +87,7 @@ create table invoice_lines(
   amount int(4) not null default 1,
   id int(11) not null auto_increment,
     primary key(id)
-);
+) engine=innodb default charset=utf8;
 
 create table  invoice_prices(
   price float(7,2) null,
@@ -95,7 +95,7 @@ create table  invoice_prices(
     foreign key(invoice_line) references invoice_lines(id),
   id int(11) not null auto_increment,
     primary key(id)
-);
+) engine=innodb default charset=utf8;
 
 
 
@@ -109,12 +109,16 @@ for each row
       and c.category=p.category
       order by l.id desc limit 1);
 
-create user 'stock'@'localhost' identified by 'stock';
-grant all privileges on stock.* TO 'stock'@'localhost';
+
 
 
 insert into users (email, passwd, role) values ('galfrano@gmail.com', '$2y$10$8qkRTbwzdI/gWHIKwW6gBO1Xr4R.SXZ07aulG87g4f1JNzOHpihbS', 'Administrator');
 
+insert into users (email, passwd, role) values ('dariol@agavespirits.eu', '$2y$10$gL9mhjfZtpXfVhjXRNX2GeOlC2iVretqU8WgMX8MUmEc8NlpVZGE.', 'Administrator');
+
+
+create user 'stock'@'localhost' identified by 'stock';
+grant all privileges on stock.* TO 'stock'@'localhost';
 /* all sales */
 
 select w.id wid, w.name warehouse, p.id pid, p.name product, l.amount sales, i.occurence from warehouses w, products p, invoices i, invoice_lines l where l.invoice=i.id and p.id=l.product and i.warehouse=w.id;
