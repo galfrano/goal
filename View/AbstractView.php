@@ -8,13 +8,13 @@ abstract class AbstractView implements ViewInterface{
 	protected static $urlMap;
 	public function __construct($tpl = false){
 		is_string($tpl) ?: $tpl = \Configuration\TPL;
-		list($this->doctype, $this->html) = Loader::tags(file_get_contents(\APP_PATH.'/View/html/'.$tpl.'.html'));}
+		list($this->doctype, $this->html) = Loader::tags(file_get_contents(\APP_PATH.'/View/html/'.$tpl.'.html'));
+		$this->setAssetsPath();}
 
 	protected static function template($template){
 		return current(Loader::tags(file_get_contents(\APP_PATH.'/View/html/'.$template.'.html')));}
 
 	public function output(){
-		\MAIN_URL === '/' ?: $this->setAssetsPath();
 		echo $this->doctype, $this->html;}
 
 	protected function setAssetsPath(){
@@ -33,7 +33,7 @@ abstract class AbstractView implements ViewInterface{
 				$parts[$i] = $replace[$key];}}
 		return \MAIN_URL.'/'.implode('/', array_filter($parts)).'/';}
 
-	protected function menuBar($sections = [], $path = '/'){
+	protected function menuBar($sections = [], $path = ''){
 		$bar = new Tag(['div', 'class'=>'topbar']);
 		$menu = $bar->div();
 		$bar->div()->form(['method'=>'post'])->button(['name'=>'logout', 'value'=>1, 'class'=>'btn btn-warning'])->say('logout');

@@ -15,7 +15,15 @@ class Tag{
 		!is_null(self::$language) ?: self::$language = include \Configuration\LANG;
 		list($this->tag, $this->attributes) =  is_array($tag) ? [array_shift($tag), $tag] : [$tag, []] ;
 		empty($tag['id']) || isset(static::$ids[$tag['id']]) ?: static::$ids[$tag['id']] = $this;
-		empty($tag['name']) || isset(static::$names[$tag['name']]) ?: static::$names[$tag['name']] = $this;}
+		empty($tag['name']) ?: $this->registerName($tag['name']);}
+
+	function registerName($name){
+		if(empty(static::$names[$name])){
+			static::$names[$name] = $this;}
+		elseif(!is_array(static::$names[$name])){
+			static::$names[$name] = [static::$names[$name], $this];}
+		else{
+			static::$names[$name][] = $this;}}
 
 	function __clone(){
 		$children = $this->children;
@@ -34,10 +42,11 @@ class Tag{
 	function __get($tag){
 		return empty($this->attributes[$tag]) ? $this->find($tag): $this->attributes[$tag] ;}
 
-/*	function __unset($name){
-		unset($this->attributes[$name]);}*/
+	static function setValue($name, $val){
+		if($element = Tag::getByName($name)){
+			is_array($element) ? array_walk($element, function($e)use($val){$e->value !== $val ?: $e->checked = true;}) : $element->val($val);}}
 
-	function val($val){
+	private function val($val){
 		if($this->tag == 'input'){
 			$this->attributes['value'] = $val;}
 		elseif($this->tag =='textarea'){

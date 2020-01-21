@@ -1,6 +1,7 @@
 <?php
 
 namespace Controller;
+use \View\InvoiceView;
 
 class AdminController extends CrudController{
 	protected static $entities = ['categories', 'users', 'products', 'customers', 'warehouses', 'inbound', 'invoices'];
@@ -14,7 +15,16 @@ class AdminController extends CrudController{
 
 	function isAvailable($table){
 		if(!in_array($table, self::$entities, true)){
-			throw new \Exception('No such entity available for Admin');}}
+			throw new \Exception('No such entity available for Admin');}
+		elseif($table === 'invoices'){
+			self::$actions[] = 'print';
+			$this->view = new InvoiceView(static::$sections, static::$path);}}
+
+	function get(){
+		if($this->table === 'invoices' && $this->action === 'print' && $this->id){
+			$this->view->showInvoice($this->entity, $this->id)->output();}
+		else{
+			parent::get();}}
 }
 /*
 admin/reports/view/sales/20200115-20201131	(view name, dates/filters)

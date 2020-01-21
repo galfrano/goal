@@ -10,7 +10,7 @@ class CrudView extends AbstractView{
 	protected static urlMap(){
 		}*/
 
-	function __construct($sections = [], $path = '/test/goal/'){
+	function __construct($sections = [], $path = ''){
 		parent::__construct();
 		$this->menuBar($sections, $path);}
 
@@ -30,8 +30,7 @@ class CrudView extends AbstractView{
 			$td = $row->td(['class'=>'actions']);
 			$td->a(['href'=>self::getUrl(['action'], ['edit']).$line[$entity->pk], 'class'=>'btn btn-info btn-xs'])->say('edit');
 //			$td->a(['href'=>self::getUrl().'delete/'.$line[$entity->pk], 'class'=>'btn btn-danger btn-xs'])->say('delete');
-			$td->form(['method'=>'post', 'action'=>self::getUrl().'delete/'.$line[$entity->pk]])->button(['class'=>'btn btn-danger btn-xs', 'name'=>'delete', 'value'=>1])->say('delete');
-}
+			$td->form(['method'=>'post', 'action'=>self::getUrl().'delete/'.$line[$entity->pk]])->button(['class'=>'btn btn-danger btn-xs', 'name'=>'delete', 'value'=>1])->say('delete');}
 		$pager = $div->div(['class'=>'pager']);
 		for($p = 1, $pages = $entity->pages(); $p <= $pages; $pager->a(['class'=>'btn btn-xs btn-'.($page == $p ? 'default active' : 'primary'), 'href'=>self::getUrl(['page'], [$p])])->text($p++));
 		return $this;}
@@ -65,10 +64,9 @@ class CrudView extends AbstractView{
 				$table->text($clone);}}
 		return $table;}
 
-	function showUpdateForm($entity, $id, $children = [], $callback = false){
+	function showUpdateForm($entity, $id, $children = []){
 		$form = $this->form($entity);
 		$table = $form->table[0];
-		//!is_callable($callback) ?: $callback($form) ;
 //		$children = [];// \Config::children($entity->tn);
 //		$form->div[1]->a(['href'=>\Helper\View::getUrl().'action=printInvoice', 'class'=>'btn btn-warning btn-sm print'])->say('print');
 		foreach($children as $child){
@@ -80,7 +78,7 @@ class CrudView extends AbstractView{
 		$this->html->get('body')->text($form);
 		return $this;}
 
-	function showCreateForm($entity, $children = [], $callback = false){//TODO: review need for callback
+	function showCreateForm($entity, $children = []){//TODO: review need for callback
 		$form = $this->form($entity);
 		$table = $form->table[0];
 		//$children = [];// \Config::children($entity->tn);//var_dump($children);die;
@@ -88,24 +86,13 @@ class CrudView extends AbstractView{
 			$tr = $table->tr();
 				$tr->th()->say($child);
 				$tr->td()->text($this->childForm($entity, $entity->child($child)));}
-//		!is_callable($callback) ?: $callback($form) ;
 		$table->tr()->th(['colspan'=>2, 'class'=>'button-cell'])->button(['class'=>'btn btn-success'])->say('create');
-		$this->html->get('body')->text($form);
-		return $this;}
-
-	function showLoginForm($callback = false){
-		$head = ['email', 'password'];
-		$form = $this->form($head);
-		$table = $form->table[0];
-		is_callable($callback) ?: $callback($form) ;
-		$table->tr()->th(['colspan'=>2, 'class'=>'button-cell'])->button(['class'=>'btn btn-primary'])->say('login');
 		$this->html->get('body')->text($form);
 		return $this;}
 
 	protected function fillForm($data){//var_dump($data); die;
 		foreach($data as $name=>$value){
-			if($element = Tag::getByName($name)){
-				$element->val($value);}}}
+			Tag::setValue($name, $value);}}
 
 	//TODO: include data types
 	protected function form($entity){

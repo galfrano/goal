@@ -1,16 +1,15 @@
 <?php
 namespace View;
-class InvoiceView extends AbstractView{
+use \Xml\Loader;
+class InvoiceView extends CrudView{
 
-	function __construct($data){
-		parent::__construct('invoice.html');
-//var_dump($data); die;
-//		var_dump($this->html->get(['id'=>'customer'])); die;
-		$this->load2($data);}
+	function showUpdateForm($entity, $id, $children = []){
+		parent::showUpdateForm($entity, $id, $children);
+		$this->html->get(['id'=>'actions'])->a(['href'=>self::getUrl(['action'], ['print']), 'class'=>'btn btn-default'])->say('print');
+		return $this;}
 
-	function load2($data){
-		$this->html->get('title')->text('Invoice #'.$data['invoice']['invoice_number']);
-		$this->load($data);
-
-
-}}
+	function showInvoice(){
+		list($this->doctype, $this->html) = Loader::tags(file_get_contents(\APP_PATH.'/View/html/invoice.html'));
+		$this->setAssetsPath();
+		return $this;}
+}

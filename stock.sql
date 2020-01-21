@@ -72,6 +72,8 @@ create table invoices(
     foreign key(user) references users(id),
   customer int(11) not null,
     foreign key(customer) references customers(id),
+  payment_method enum('cash', 'transfer') not null,
+  paid enum('yes', 'no') not null,
   warehouse int(11) not null,
    foreign key(warehouse) references warehouses(id),
   id int(11) not null auto_increment,
@@ -135,6 +137,21 @@ select w.id, w.name warehouse, p.name product, sum(b.amount) inbound, sum(s.sale
 select w.id, w.name warehouse, p.name product, sum(b.amount) from warehouses w, products p, inbound b where b.product=p.id and b.warehouse=w.id group by w.id, b.product;
 
 select w.id, w.name warehouse, p.name product, sum(b.amount) inbound, sum(s.sales) sales, (sum(b.amount)-sum(s.sales)) stock from warehouses w, products p, inbound b, sales s where b.product=p.id and b.warehouse=w.id and s.wid=b.warehouse and s.pid=b.product group by w.id, b.product;
+
+
+
+
+select w.id, w.name warehouse, p.name product, sum(b.amount) inbound, sum(s.sales) sales, (sum(b.amount)-sum(s.sales)) stock from warehouses w, products p, inbound b left join sales s on (s.wid=b.warehouse and s.pid=b.product) where b.product=p.id and b.warehouse=w.id group by w.id, b.product;
+
+
+
+
+
+
+
+
+
+
 
 
 

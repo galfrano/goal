@@ -17,3 +17,4 @@ h2, h3{margin:0;}
 #total table{display:inline-block; border-spacing:6px; margin-top:70px; margin-bottom:30px;}
 #total h2 span{display:inline-block; margin-left:35px;}
 .footer{position:fixed; bottom:10px;}
+img{filter: brightness(0%);}

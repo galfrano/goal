@@ -5,6 +5,7 @@ use View\InvoiceView;
 use Model\Entity;
 class InvoicesController extends CrudController{
 
+
 	protected $actions = ['print'=>'printInvoice'];
 
 	function printInvoiceAction(){
@@ -29,5 +30,6 @@ class InvoicesController extends CrudController{
 		echo $id == 0 ?
 			$this->view->showCreateForm($this->entity)->output() :
 			$this->view->showUpdateForm($this->entity, $id)->addOn('actions', $this->actions)->output() ;}
+
 
 }

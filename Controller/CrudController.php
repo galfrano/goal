@@ -23,22 +23,21 @@ interface Controller{
 	protected static $actions = ['edit', 'delete', 'new'];
 	protected static $children = [];
 	protected static $sections = [];
-	protected static $path = '/';
-	protected $table, $page, $action, $id;
+	protected $table;
+	protected $page, $action, $id;
 	protected $entity, $view, $childrenList = [];
 
 	function __construct($table, $path = []){
-		$this->entity = new Entity($table);
+		$this->entity = new Entity($this->table = $table);
 		if(key_exists($table, static::$children)){
 			$this->childrenList = static::$children[$table];}
-		$this->view = new CrudView(static::$sections, static::$path);
+		!is_null($this->view) || $this->view = new CrudView(static::$sections, static::$path);
 		$this->setPath($path);
 		!empty($_POST) ? $this->post($_POST) : $this->get();}
 
 	protected function setPath($path){
-//		var_dump($path);die;
 		$this->page = !empty($path[0]) && is_numeric($path[0]) ? $path[0] : 1;
-		$this->action = !empty($path[1]) && in_array($path[1], self::$actions, true) ? $path[1] : false;
+		$this->action = !empty($path[1]) && in_array($path[1], static::$actions, true) ? $path[1] : false;
 		$this->id = !empty($path[2]) && is_numeric($path[2]) ? $path[2] : false;}
 
 	// handles view list, view edit, view new

@@ -20,3 +20,5 @@ input.form-control[type="date"]{width:150px; line-height:15px;}
 #actions a{margin:0 10px;}
 th{text-align: center;}
 .actions form{display:inline-block;}
+.btn-default{color:#000;}
+.btn-default:hover{color:#00f;}

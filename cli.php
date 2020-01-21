@@ -1,6 +1,5 @@
 <?php
-echo password_hash('dario8110', PASSWORD_DEFAULT);
-die("\n");
+//only usage for now is php cli.php generate
 
 include(__DIR__.'/Configuration/Constants.php');
 include(__DIR__.'/Model/Pdoh.php');
