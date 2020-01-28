@@ -19,10 +19,8 @@ interface Controller{
 	function __construct($entity, $options);
 }*/
 
-/*abstract*/ class CrudController{
-	protected static $actions = ['edit', 'delete', 'new'];
-	protected static $children = [];
-	protected static $sections = [];
+abstract class CrudController{
+	protected static $actions = ['edit', 'delete', 'new'], $children = [], $sections = [], $path;
 	protected $table;
 	protected $page, $action, $id;
 	protected $entity, $view, $childrenList = [];

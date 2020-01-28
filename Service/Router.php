@@ -6,6 +6,7 @@ namespace Service;
 use Controller\CrudController;
 use Controller\AdminController;
 use Controller\LoginController;
+use Controller\ReportController;
 
 class Router{
 	protected static $controllers = ['crud'=>'CrudController', 'admin'=>'AdminController', 'sales'=>'SalesRepController', 'invoices'=>'InvoicesController'], $defaultPath = '/admin/users/1';
@@ -19,10 +20,12 @@ class Router{
 	function section($path){
 		if(empty($path)){
 			header('location: '.\MAIN_URL.static::$defaultPath);}
-		elseif($path[0] === 'crud' && $path[1] === 'users' ){
-			new CrudController('users', [@$path[2], @$path[3], @$path[4]]);}
+/*		elseif($path[0] === 'crud' && $path[1] === 'users' ){
+			new CrudController('users', [@$path[2], @$path[3], @$path[4]]);}*/
 		elseif($path[0] === 'admin'){
 			new AdminController($path[1], [@$path[2], @$path[3], @$path[4]]);}
+		elseif($path[0] === 'reports'){
+			new ReportController();}
 		else{
 			echo 'Path not found ';
 			var_dump($path);}}}

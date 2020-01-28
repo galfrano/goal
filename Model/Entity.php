@@ -24,6 +24,7 @@ class Entity{
 	private function page($page){
 		return is_numeric($page) ? ' limit '.(($this->rpp*$page)-$this->rpp).', '.$this->rpp : '' ;}
 
+	//FIXME!! children
 	function get($id, $children = [], $default = true){
 		$query = 'select '.$this->columns.' from '.$this->tn.(is_array($id) ? $this->filters($id) : ' where '.$this->schema['pk'].'=?');
 		$lines = $this->db->query($query, $id)->fetchAll();

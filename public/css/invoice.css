@@ -1,20 +1,26 @@
 body{font-family:Helvetica, Arial; background-color:#000; margin:0;}
-.wrapper{background-color:#FFF; width:670px; margin:0 auto; min-height:945px; padding:10px;}
-#products td, #products th{border-style:solid; border-width:0 0 1px 0;}
-#products th{border-color:#000; padding:0 10px;}
-#products td{border-color:#CCC; padding:0 10px; text-align:center;}
-#products{border-spacing:0; width:100%; font-size:13px;}
-/*#seller{font-size:20px;}*/
-#header{width:100%;}
-h2, h3{margin:0;}
-#invoice, #customer{vertical-align:top; text-align:right;}
-#invoice table{display:inline-block;}
-#customer span, #seller span{white-space: pre; display:block; font-size:14px;}
-#seller, #customer{padding:0 20px 20px 20px;}
-#invoice table{border:solid 1px #CCC;}
-#invoice td{font-size:12px; padding:0 10px;}
-#total{text-align:right;}
-#total table{display:inline-block; border-spacing:6px; margin-top:70px; margin-bottom:30px;}
-#total h2 span{display:inline-block; margin-left:35px;}
-.footer{position:fixed; bottom:10px;}
-img{filter: brightness(0%);}
+.wrapper{background-color:#FFF; width:650px; margin:0 auto; min-height:925px; padding:20px;}
+img{filter: brightness(0%); width:100px; float:right;}
+.title{font-size:20px; font-weight:bold;}
+.title span{float:right;}
+.company{border-spacing:0; border:1px solid #000; width:100%;}
+.company > tbody > tr > td{border:1px solid #000; width:50%; padding:10px; vertical-align:top;}
+h3{margin:5px;}
+.address{margin:8px; line-height:30px;}
+.dic{margin:10px; font-size:12px; line-height:20px;}
+.contact td{font-size:12px; width:85px;}
+.bank-details{font-size:12px;}
+.bank-details td{min-width:85px;}
+#account-number{padding:0 5px; border:2px solid #000; font-weight:bold;}
+.dates{font-size:12px; padding:50px 0 0 130px;}
+.separator{font-size:12px; margin:10px;}
+#products{width:100%; border-spacing:0;}
+#products th{border-bottom:2px solid #000; text-align:left;}
+#products td{border-bottom:1px solid #000; padding: 10px; font-size:12px;}
+#products td:nth-child(2), #products td:nth-child(3){text-align:center;}
+#products td:nth-child(4){text-align:right;}
+.sum{font-weight:bold; text-align:right; margin-bottom:50px;}
+.summary{float:right; display:inline-block;}
+.summary table{float:right; border-spacing:0; border:1px solid #000;}
+.summary td, .summary th{border:1px solid #000; padding:5px 20px;}
+.signature{border-top:2px dashed #000; padding:5px; margin-top:200px; text-align:center;}
