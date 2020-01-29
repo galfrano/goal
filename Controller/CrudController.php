@@ -7,6 +7,15 @@ TODO: review interface after implementing tests -> whether this is an antipatter
 	for now there will be no interface other than the constructor
 	it will take an table and an array of options. actions inside the controller will be handled internally.
 	$entity/$table should NOT be optional, this could cause misusage
+
+TODO: add security!!!!
+
+g show list
+g show create form
+p create action -> route to last
+g show edit from
+p update action -> keep current page
+p delete action
 */
 
 namespace Controller;
@@ -17,6 +26,7 @@ use View\CrudView;
 /*
 interface Controller{
 	function __construct($entity, $options);
+
 }*/
 
 abstract class CrudController{
@@ -26,7 +36,7 @@ abstract class CrudController{
 	protected $entity, $view, $childrenList = [];
 
 	function __construct($table, $path = []){
-		$this->entity = new Entity($this->table = $table);
+		!empty($this->entity) ?: $this->entity = new Entity($this->table = $table);
 		if(key_exists($table, static::$children)){
 			$this->childrenList = static::$children[$table];}
 		!is_null($this->view) || $this->view = new CrudView(static::$sections, static::$path);
@@ -58,54 +68,3 @@ abstract class CrudController{
 			$this->entity->delete($this->id);}
 		header('location: '.CrudView::getUrl(['action', 'id'], ['', '']));}
 }
-
-/*
-g show list
-g show create form
-p create action -> route to last
-g show edit from
-p update action -> keep current page
-p delete action
-*/
-//TODO: add security!!!!
-/*abstract class CrudController{
-
-	protected $entity, $table, $view, $actions;
-
-	function __construct($table = null){
-		!is_null($this->table) ?: $this->table = $table;
-		!is_null($this->table) or die('$table is null');
-		$this->entity = new Entity($this->table);
-		$this->catalogs = $this->entity->getParents();
-//		var_dump($this->catalogs); die;
-		$this->view = new View;
-		$this->route();}
-
-	function route(){
-		if(!empty($_GET['action'])){
-			$action = $_GET['action'].'Action';
-			$this->$action();}
-		elseif(!empty($_GET['delete'])){
-			$this->entity->delete($_GET['delete']);
-			header('location: ./'.View::getUrl('delete'));}
-		elseif(!empty($_GET['ajax'])){
-			$this->ajax($_GET['ajax'], $_GET['']);}
-		elseif(!empty($_POST)){
-//			var_dump($_POST); die;
-			empty($_GET[$this->entity->pk]) ? $this->entity->add($_POST) : $this->entity->edit($_POST, $_GET[$this->entity->pk]) ;
-			header('location: ./'.View::getUrl($this->entity->pk));}
-		else{
-			isset($_GET[$this->entity->pk]) ? $this->read($_GET[$this->entity->pk]) : $this->readList() ;}}
-
-	//TODO: search, pagination
-	function readList(){
-		echo $this->view->showList($this->entity, empty($_GET['page']) ? 1 : $_GET['page'])->output();}
-
-	function read($id){
-		echo $id == 0 ?
-			$this->view->showCreateForm($this->entity)->output() :
-			$this->view->showUpdateForm($this->entity, $id)->output() ;}
-
-	function ajax($child, $id = null){
-		$childEntity = new Entity($child);
-		echo $this->view->childForm($this->entity, $childEntity, is_null($id)?:$childEntity->get($id));}}*/

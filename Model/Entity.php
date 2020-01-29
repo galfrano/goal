@@ -22,7 +22,7 @@ class Entity{
 		return $this->db->query('select SQL_CALC_FOUND_ROWS * from '.$this->tn.$this->filters($filters).$this->page($page), $filters)->fetchAll($callback);}
 
 	private function page($page){
-		return is_numeric($page) ? ' limit '.(($this->rpp*$page)-$this->rpp).', '.$this->rpp : '' ;}
+		return is_numeric($page) && $this->rpp > 0 ? ' limit '.(($this->rpp*$page)-$this->rpp).', '.$this->rpp : '' ;}
 
 	//FIXME!! children
 	function get($id, $children = [], $default = true){
