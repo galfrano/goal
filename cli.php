@@ -1,5 +1,5 @@
 <?php
-//only usage for now is php cli.php generate
+//only usage for now is php cli.php schema and php cli.php pass somePassword
 
 include(__DIR__.'/Configuration/Constants.php');
 include(__DIR__.'/Model/Pdoh.php');
@@ -12,5 +12,9 @@ class FileManager{
 
 
 if(!empty($argv[1])){
-	FileManager::delete('./Model/'.\Configuration\D);
-	new Model\Schema(new Model\Pdoh());}
+	if($argv[1] === 'schema'){
+		$schemaDir = './Model/'.\Configuration\D;
+		!is_dir($schemaDir) ?: FileManager::delete($schemaDir);
+		new Model\Schema(new Model\Pdoh());}
+	elseif(!empty($argv[2]) && $argv[1] === 'pass'){
+		echo password_hash($argv[2], PASSWORD_DEFAULT)."\n";}}
