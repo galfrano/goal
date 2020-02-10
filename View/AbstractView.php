@@ -46,6 +46,18 @@ abstract class AbstractView implements ViewInterface{
 			$tag->a(['href'=>self::getUrl().'action='.$button, 'class'=>'btn btn-success'])->say($name);}
 		return $this;}
 
+	protected function tableize($data){
+		$head = array_keys(current($data));
+		$table = new Tag(['table', 'class'=>'table table-striped']);
+		$thr = $table->tr();
+		foreach($head as $th){
+			$thr->th()->say($th);}
+		foreach($data as $row){
+			$tdr = $table->tr();
+			foreach($row as $td){
+				$tdr->td()->text($td);}}
+		return $table;}
+
 	public function load($data){
 		foreach($data as $id=>$pop){
 			$tag = $this->html->get(['id'=>$id]);

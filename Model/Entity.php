@@ -4,7 +4,7 @@ namespace Model;
 
 class Entity{
 
-	private $pdoh, $id;
+	private $pdoh, $id, $fieldExceptions = [];
 
 	public $schema, $tn, $rpp = 20, $columns = '*';
 
@@ -14,11 +14,17 @@ class Entity{
 		$this->schema = (new Schema($this->db))->$table;}
 
 	function __get($name){
-		$gettables = ['fields'=>array_keys($this->schema['columns']), 'pk'=>$this->schema['pk'], 'types'=>$this->schema['columns']];
+		$fields = array_filter(array_keys($this->schema['columns']), function($field){
+			return !in_array($field, $this->fieldExceptions);});
+		$gettables = ['fields'=>$fields, 'pk'=>$this->schema['pk'], 'types'=>$this->schema['columns']];
 		return empty($gettables[$name]) ? NULL : $gettables[$name] ;}
+
+	function __unset($field){
+		$this->fieldExceptions[] = $field;}
 
 	function getList($page = 1, $filters = [], $callback = false){
 //		is_callable($callback) ?: $callback = function($line)
+		!$callback && !empty($this->fieldExceptions) && $callback = function(&$line){$line = array_diff_key($line, array_flip($this->fieldExceptions));};
 		return $this->db->query('select SQL_CALC_FOUND_ROWS * from '.$this->tn.$this->filters($filters).$this->page($page), $filters)->fetchAll($callback);}
 
 	private function page($page){

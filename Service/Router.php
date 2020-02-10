@@ -2,11 +2,9 @@
 
 namespace Service;
 
-//use Controller\CrudController;
-use Controller\CrudController;
 use Controller\AdminController;
 use Controller\LoginController;
-use Controller\ReportController;
+use Controller\UserController;
 
 class Router{
 	protected static $controllers = ['crud'=>'CrudController', 'admin'=>'AdminController', 'sales'=>'SalesRepController', 'invoices'=>'InvoicesController'], $defaultPath = '/admin/users/1';
@@ -24,6 +22,8 @@ class Router{
 			new CrudController('users', [@$path[2], @$path[3], @$path[4]]);}*/
 		elseif($path[0] === 'admin'){
 			new AdminController($path[1], [@$path[2], @$path[3], @$path[4]]);}
+		elseif($path[0] === 'sales-rep'){
+			new UserController($path[1], [@$path[2], @$path[3], @$path[4]]);}
 		else{
 			echo 'Path not found ';
 			var_dump($path);}}}

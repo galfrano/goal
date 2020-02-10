@@ -30,18 +30,6 @@ class ReportView extends AbstractView{
 			$wrapper->text($this->tableize($data[$wid]));}
 		return $this;}
 
-	protected function tableize($data){
-		$head = array_keys(current($data));
-		$table = new Tag(['table', 'class'=>'table table-striped']);
-		$thr = $table->tr();
-		foreach($head as $th){
-			$thr->th()->say($th);}
-		foreach($data as $row){
-			$tdr = $table->tr();
-			foreach($row as $td){
-				$tdr->td()->text($td);}}
-		return $table;}
-
 	protected function stockPerShop($inbound, $sales, $products){
 		$stock = [];
 		foreach($inbound as $row){

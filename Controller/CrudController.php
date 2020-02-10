@@ -36,10 +36,10 @@ abstract class CrudController{
 	protected $entity, $view, $childrenList = [];
 
 	function __construct($table, $path = []){
-		!empty($this->entity) ?: $this->entity = new Entity($this->table = $table);
+		!empty($this->entity) || $this->entity = new Entity($this->table = $table);
 		if(key_exists($table, static::$children)){
 			$this->childrenList = static::$children[$table];}
-		!is_null($this->view) || $this->view = new CrudView(static::$sections, static::$path);
+		!empty($this->view) || $this->view = new CrudView(static::$sections, static::$path);
 		$this->setPath($path);
 		!empty($_POST) ? $this->post($_POST) : $this->get();}
 

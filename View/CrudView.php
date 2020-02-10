@@ -6,9 +6,6 @@ class CrudView extends AbstractView{
 	public $session;
 
 	protected static $urlMap = ['page'=>2, 'action'=>3, 'id'=>4];
-/*
-	protected static urlMap(){
-		}*/
 
 	function __construct($sections = [], $path = ''){
 		parent::__construct();
