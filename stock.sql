@@ -21,6 +21,7 @@ create table users(
 
 create table customers(
   name varchar(127) not null,
+  business_name varchar(127) null,
   address text,
   dic varchar(127) null,
   ic varchar(127) null,

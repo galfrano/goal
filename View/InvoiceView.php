@@ -13,7 +13,7 @@ class InvoiceView extends CrudView{
 		$invoice = (new Entity('invoices'))->get($id);
 //		$invoice
 		$customer = ((new Entity('customers'))->get($invoice['customer']));
-		$data = ['occurence'=>substr($invoice['occurence'], 0, 10), 'payment_method'=>$invoice['payment_method'], 'address'=>nl2br($customer['address']), 'customer'=>$customer['name'], 'ic'=>$customer['ic'], 'dic'=>$customer['dic'], 'lines'=>[]];
+		$data = ['occurence'=>substr($invoice['occurence'], 0, 10), 'payment_method'=>$invoice['payment_method'], 'address'=>nl2br($customer['address']), 'customer'=>$customer['business_name'], 'ic'=>$customer['ic'], 'dic'=>$customer['dic'], 'lines'=>[]];
 		$data['payment_method'] = $invoice['payment_method'] === 'cash' ? 'Hotovost' : 'Převodem';
 		$total = 0;
 //$res = $entity->get($id);

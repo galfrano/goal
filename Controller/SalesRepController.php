@@ -4,7 +4,7 @@ namespace Controller;
 
 
 
-class SalesRepController{
+class SalesRepController extends UserController{
 
 
 }

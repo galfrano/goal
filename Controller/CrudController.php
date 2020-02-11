@@ -33,6 +33,7 @@ abstract class CrudController{
 	protected static $actions = ['edit', 'delete', 'new'], $children = [], $sections = [], $path;
 	protected $table;
 	protected $page, $action, $id;
+	protected $filter = [];
 	protected $entity, $view, $childrenList = [];
 
 	function __construct($table, $path = []){
@@ -52,7 +53,7 @@ abstract class CrudController{
 	// for now, if we have an id with an empty action we will not handle it.
 	protected function get(){
 		if(!$this->action){
-			$this->view->showList($this->entity, $this->page)->output();}
+			$this->view->showList($this->entity, $this->page, $this->filter)->output();}
 		elseif($this->action === 'new'){
 			$this->view->showCreateForm($this->entity, $this->childrenList)->output();}
 		elseif($this->action === 'edit' && $this->id){

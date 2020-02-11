@@ -26,13 +26,35 @@ class CrudView extends AbstractView{
 				$row->td()->text(key_exists($col, $catalogs) ? $catalogs[$col][$value] : $value);}
 			$td = $row->td(['class'=>'actions']);
 			$td->a(['href'=>self::getUrl(['action'], ['edit']).$line[$entity->pk], 'class'=>'btn btn-info btn-xs'])->say('edit');
-//			$td->a(['href'=>self::getUrl().'delete/'.$line[$entity->pk], 'class'=>'btn btn-danger btn-xs'])->say('delete');
 			$td->form(['method'=>'post', 'action'=>self::getUrl().'delete/'.$line[$entity->pk]])->button(['class'=>'btn btn-danger btn-xs', 'name'=>'delete', 'value'=>1])->say('delete');}
 		$pager = $div->div(['class'=>'pager']);
 		for($p = 1, $pages = $entity->pages(); $p <= $pages; $pager->a(['class'=>'btn btn-xs btn-'.($page == $p ? 'default active' : 'primary'), 'href'=>self::getUrl(['page'], [$p])])->text($p++));
 		return $this;}
 
-	function childForm($entity, $child, $id = false){
+	function showUpdateForm($entity, $id, $children = []){
+		$form = self::form($entity);
+		$table = $form->table[0];
+		foreach($children as $child){
+			$tr = $table->tr();
+			$tr->th()->say($child);
+			$tr->td()->text(self::childForm($entity, $entity->child($child), $id));}
+		self::fillForm($entity->get($id, $children));
+		$table->tr()->th(['colspan'=>2, 'class'=>'button-cell'])->button(['class'=>'btn btn-info'])->say('update');
+		$this->html->get('body')->text($form);
+		return $this;}
+
+	function showCreateForm($entity, $children = []){
+		$form = self::form($entity);
+		$table = $form->table[0];
+		foreach($children as $child){
+			$tr = $table->tr();
+				$tr->th()->say($child);
+				$tr->td()->text(self::childForm($entity, $entity->child($child)));}
+		$table->tr()->th(['colspan'=>2, 'class'=>'button-cell'])->button(['class'=>'btn btn-success'])->say('create');
+		$this->html->get('body')->text($form);
+		return $this;}
+
+	protected static function childForm($entity, $child, $id = false){
 		$children = $entity->schema['children'];
 		$omit = $children[$child->tn][$entity->pk];
 		$table = new Tag(['table', 'class'=>'table table-bordered', 'id'=>'child-table']);
@@ -47,7 +69,7 @@ class CrudView extends AbstractView{
 			else{
 				$tr0->th()->say($th);
 				if(!key_exists($th, $catalogs)){
-					$attributes = ['name'=>static::camel($child->tn).'[]['.$th.']', 'class'=>'form-control']+$this->typeAttributes($types[$th])+($th == $entity->pk ? ['disabled'=>1] : []);
+					$attributes = ['name'=>static::camel($child->tn).'[]['.$th.']', 'class'=>'form-control']+self::typeAttributes($types[$th])+($th == $entity->pk ? ['disabled'=>1] : []);
 					$tr1->td()->input($attributes);}
 				else{
 					$select = $tr1->td()->select(['name'=>static::camel($child->tn).'[]['.$th.']']);
@@ -61,38 +83,8 @@ class CrudView extends AbstractView{
 				$table->text($clone);}}
 		return $table;}
 
-	function showUpdateForm($entity, $id, $children = []){
-		$form = $this->form($entity);
-		$table = $form->table[0];
-//		$children = [];// \Config::children($entity->tn);
-//		$form->div[1]->a(['href'=>\Helper\View::getUrl().'action=printInvoice', 'class'=>'btn btn-warning btn-sm print'])->say('print');
-		foreach($children as $child){
-			$tr = $table->tr();
-			$tr->th()->say($child);
-			$tr->td()->text($this->childForm($entity, $entity->child($child), $id));}
-		$this->fillForm($entity->get($id, $children));//TODO:
-		$table->tr()->th(['colspan'=>2, 'class'=>'button-cell'])->button(['class'=>'btn btn-info'])->say('update');
-		$this->html->get('body')->text($form);
-		return $this;}
-
-	function showCreateForm($entity, $children = []){//TODO: review need for callback
-		$form = $this->form($entity);
-		$table = $form->table[0];
-		//$children = [];// \Config::children($entity->tn);//var_dump($children);die;
-		foreach($children as $child){
-			$tr = $table->tr();
-				$tr->th()->say($child);
-				$tr->td()->text($this->childForm($entity, $entity->child($child)));}
-		$table->tr()->th(['colspan'=>2, 'class'=>'button-cell'])->button(['class'=>'btn btn-success'])->say('create');
-		$this->html->get('body')->text($form);
-		return $this;}
-
-	protected function fillForm($data){//var_dump($data); die;
-		foreach($data as $name=>$value){
-			Tag::setValue($name, $value);}}
-
-	//TODO: include data types
-	protected function form($entity){
+	//TODO: include more data types
+	protected static function form($entity){
 		$div = new Tag(['div', 'class'=>'form-wrapper']);
 		$div->div(['id'=>'actions'])->a(['href'=>self::getUrl(['action', 'id'], ['', '']), 'class'=>'btn btn-primary'])->say('back');
 		$div->div[0]->div(['id'=>'extra']);
@@ -113,6 +105,10 @@ class CrudView extends AbstractView{
 			elseif($types[$th] !== 'timestamp'){
 				$tr->td()->child(self::field($th, $types[$th])+($th == $entity->pk ? ['disabled'=>1] : []));}}
 		return $div;}
+
+	protected static function fillForm($data){
+		foreach($data as $name=>$value){
+			Tag::setValue($name, $value);}}
 
 	protected static function radios(&$cell, $name, $type){//asumption: enum('val1','val2') //TODO: correct pass by reference
 		$enum = explode('\',\'', substr($type, 6, -2));
@@ -138,7 +134,7 @@ class CrudView extends AbstractView{
 			$attributes += $type == 'date' ? ['type'=>'date'] : ['type'=>'text'] ;}
 		return $attributes;}
 
-	protected function typeAttributes($type){//remove styles
+	protected static function typeAttributes($type){
 		if(substr($type, 0, 3) == 'int'){
 			for($digits = str_replace(['int(', ')', ' unsigned'], '', $type), $max = 1; $digits--; $max *= 10);
 			$attributes = ['type'=>'number', 'min'=>0, 'max'=>$max-1];}
