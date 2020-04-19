@@ -22,12 +22,6 @@ namespace Controller;
 use Model\Entity;
 use View\CrudView;
 
-// $path = explode('/', 'crud/users/4/edit/35')
-/*
-interface Controller{
-	function __construct($entity, $options);
-
-}*/
 
 abstract class CrudController{
 	protected static $actions = ['edit', 'delete', 'new'], $children = [], $sections = [], $path;

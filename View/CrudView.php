@@ -7,6 +7,8 @@ class CrudView extends AbstractView{
 
 	protected static $urlMap = ['page'=>2, 'action'=>3, 'id'=>4];
 
+	public static $delete = true, $edit = true;
+
 	function __construct($sections = [], $path = ''){
 		parent::__construct();
 		$this->menuBar($sections, $path);}
@@ -25,8 +27,8 @@ class CrudView extends AbstractView{
 			foreach($line as $col => $value){
 				$row->td()->text(key_exists($col, $catalogs) ? $catalogs[$col][$value] : $value);}
 			$td = $row->td(['class'=>'actions']);
-			$td->a(['href'=>self::getUrl(['action'], ['edit']).$line[$entity->pk], 'class'=>'btn btn-info btn-xs'])->say('edit');
-			$td->form(['method'=>'post', 'action'=>self::getUrl().'delete/'.$line[$entity->pk]])->button(['class'=>'btn btn-danger btn-xs', 'name'=>'delete', 'value'=>1])->say('delete');}
+			static::$edit && $td->a(['href'=>self::getUrl(['action'], ['edit']).$line[$entity->pk], 'class'=>'btn btn-info btn-xs'])->say('edit');
+			static::$delete && $td->form(['method'=>'post', 'action'=>self::getUrl().'delete/'.$line[$entity->pk]])->button(['class'=>'btn btn-danger btn-xs', 'name'=>'delete', 'value'=>1])->say('delete');}
 		$pager = $div->div(['class'=>'pager']);
 		for($p = 1, $pages = $entity->pages(); $p <= $pages; $pager->a(['class'=>'btn btn-xs btn-'.($page == $p ? 'default active' : 'primary'), 'href'=>self::getUrl(['page'], [$p])])->text($p++));
 		return $this;}

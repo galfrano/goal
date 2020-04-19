@@ -22,6 +22,10 @@ create table users(
 create table customers(
   name varchar(127) not null,
   business_name varchar(127) null,
+  phone_number varchar(127) null,
+  email varchar(127) null,
+  webpage varchar(127) null,
+  social_media varchar(127) null,
   address text,
   dic varchar(127) null,
   ic varchar(127) null,
@@ -29,6 +33,7 @@ create table customers(
     foreign key(category) references categories(id),
   user int(11) not null,
     foreign key(user) references users(id),
+  comments text null,
   id int(11) not null auto_increment,
     primary key(id)
 ) engine=innodb default charset=utf8;
@@ -75,6 +80,7 @@ create table invoices(
     foreign key(customer) references customers(id),
   payment_method enum('cash', 'transfer') not null,
   paid enum('yes', 'no') not null,
+  cancelled enum('no', 'yes') not null default 'no',
   warehouse int(11) not null,
    foreign key(warehouse) references warehouses(id),
   id int(11) not null auto_increment,
@@ -124,7 +130,7 @@ create user 'stock'@'localhost' identified by 'stock';
 grant all privileges on stock.* TO 'stock'@'localhost';
 /* all sales */
 
-select w.id wid, w.name warehouse, p.id pid, p.name product, l.amount sales, i.occurence from warehouses w, products p, invoices i, invoice_lines l where l.invoice=i.id and p.id=l.product and i.warehouse=w.id;
+create view sals as select w.id wid, w.name warehouse, p.id pid, p.name product, l.amount sales, i.occurence from warehouses w, products p, invoices i, invoice_lines l where l.invoice=i.id and p.id=l.product and i.warehouse=w.id and LOWER(i.cancelled)!='yes';
 
 
 /* sales summary */
@@ -147,12 +153,15 @@ select w.id, w.name warehouse, p.name product, sum(b.amount) inbound, sum(s.sale
 
 
 
+/*
+alter table customers add phone_number varchar(127) null after business_name,
+  add email varchar(127) null after phone_number,
+  add webpage varchar(127) null after email,
+  add social_media varchar(127) null after webpage,
+  add comments text null after user
 
 
-
-
-
-
-
+delete from invoice_prices; delete from invoice_lines; delete from invoices;
+*/
 
 

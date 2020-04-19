@@ -5,13 +5,13 @@ version 3
 * check for "id" string
 version 2
 * generic printing
+* copy button!!
+* soft delete
 * csv export
-* textarea
-* password type
 * reports
 * file manager
 * search
-* transactions!!!!
+* review transactions!!!!
 
 
 Architecture overview

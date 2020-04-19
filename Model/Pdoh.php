@@ -7,7 +7,7 @@ class Pdoh{
 
 	protected $dbi, $stmt = [], $cstmt = -1;
 
-	protected static $pdo = [];
+	protected static $pdo = [], $transaction = [];
 
 	function __construct(){
 		key_exists(\Configuration\D, self::$pdo) ?: self::$pdo[\Configuration\D] = new \PDO('mysql:host='.\Configuration\H.';dbname='.\Configuration\D, \Configuration\U, \Configuration\P);
@@ -27,6 +27,25 @@ class Pdoh{
 		return !$bool ? $this : function()use($c){
 			$this->cstmt = $c;
 			return $this;};}
+
+	function start(){
+		if(empty(self::$transaction[$this->dbi])){
+			self::$transaction[$this->dbi] = true;
+			self::$pdo[$this->dbi]->beginTransaction();
+			return true;}
+		else{
+			return false;}}
+
+	protected function transaction(){
+		empty(self::$transaction[$this->dbi]) && self::kill('No transaction');
+		self::$transaction[$this->dbi] = false;
+		return self::$pdo[$this->dbi];}
+
+	function error(){
+		$this->transaction()->rollBack();}
+
+	function finish(){
+		$this->transaction()->commit();}
 
 	function id(){
 		return self::$pdo[$this->dbi]->lastInsertId();}

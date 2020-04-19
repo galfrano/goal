@@ -28,7 +28,7 @@ class User /*implements UserInterface*/{
 
 	static function authenticate($username, $password){
 		$user = self::entity()->get([self::$user=>$username]);
-		return $_SESSION[self::$sessionKey] = !$user || !password_verify($password, $user[self::$passwd]) ? !!$user : $user ;}
+		return $_SESSION[self::$sessionKey] = !$user || !password_verify($password, $user[self::$passwd]) ? false : $user ;}
 
 	static function encrypt($user){
 		return [self::$passwd=>password_hash($user[self::$passwd], \PASSWORD_DEFAULT)]+$user;}

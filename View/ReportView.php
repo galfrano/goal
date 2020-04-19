@@ -14,20 +14,21 @@ class ReportView extends AbstractView{
 	function showSales($data){
 		$wrapper = $this->html->get('body')->div(['class'=>'wrapper']);
 		if($data){
-			$wrapper->text($this->tableize($data));
 			$shops = $this->salesPerShop($data);
 			foreach($shops[0] as $wid => $shop){
 				$wrapper->h3()->text($shop);
-				$wrapper->text($this->tableize($shops[1][$wid]));}}
+				$wrapper->text($this->tableize($shops[1][$wid]));}
+			$wrapper->h2()->say('summary');
+			$wrapper->text($this->tableize($data));}
 		return $this;}
 
-	function showStock($sales, $inbound, $products){
+	function showStock($warehouses, $sales, $inbound, $products){
 		$wrapper = $this->html->get('body')->div(['class'=>'wrapper']);
 		$shops = $this->salesPerShop($sales);
 		$data = $this->stockPerShop($inbound, $shops[1], $products);
-		foreach($shops[0] as $wid => $shop){
-			$wrapper->h3()->text($shop);
-			$wrapper->text($this->tableize($data[$wid]));}
+		foreach($warehouses as $shop){
+			$wrapper->h3()->text($shop['name']);
+			empty($data[$shop['id']]) || $wrapper->text($this->tableize($data[$shop['id']]));}
 		return $this;}
 
 	protected function stockPerShop($inbound, $sales, $products){

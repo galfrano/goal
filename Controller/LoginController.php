@@ -23,6 +23,6 @@ class LoginController{
 		$this->view->showLoginForm($error)->output();
 		exit;}
 
-	function logout(){
-		}
+	function signUp(){
+		$this->view->showSignUpForm()->output();}
 }

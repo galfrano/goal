@@ -63,6 +63,7 @@ class Entity{
 		return !count($where) ? '' : ' where '.implode('=? and ', $where).'=?';}
 
 	function add($post){
+		$start = $this->db->start();
 		$columnSchema = $this->schema['columns'];
 		unset($columnSchema[$this->schema['pk']]);
 		$columns = array_keys($columnSchema);
@@ -74,7 +75,8 @@ class Entity{
 			if(key_exists($camel = self::camel($child), $post)){
 				$childEntity = new self($child);
 				foreach($post[$camel] as $record){
-					$childEntity->add($record+[$relation[$this->pk]=>$id]);}}}}
+					$childEntity->add($record+[$relation[$this->pk]=>$id]);}}}
+		$start && $this->db->finish();}
 
 	protected static function camel($field){
 		return str_replace(' ', '', ucwords(str_replace('_', ' ', $field)));}
@@ -111,4 +113,6 @@ class Entity{
 			return [$row[$this->schema['pk']]=>current($row)];});}
 
 	function delete($id){
-		$this->db->query('delete from '.$this->tn.' where '.$this->schema['pk'].'=?', [$id]);}}
+		$this->db->start();
+		$this->db->query('delete from '.$this->tn.' where '.$this->schema['pk'].'=?', [$id]);
+		$this->db->finish();}}

@@ -2,6 +2,7 @@
 
 namespace Controller;
 use \View\InvoiceView;
+use \View\CrudView;
 use Model\Entity;
 
 class AdminController extends CrudController{
@@ -24,7 +25,9 @@ class AdminController extends CrudController{
 			$this->view = new InvoiceView(static::$sections, static::$path);}
 		elseif($table === 'stock'){
 			$this->table = 'stock';
-			$this->entity = new Entity('sales');}}
+			$this->entity = new Entity('sales');}
+		elseif($table === 'inbound'){ //TODO: correct dirty hack
+			CrudView::$delete = false;}}
 
 	function get(){
 		if($this->table === 'sales'){
