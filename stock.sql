@@ -10,14 +10,6 @@ create table categories(
     primary key(id)
 ) engine=innodb default charset=utf8;
 
-create table users(
-  email varchar(31) not null,
-    unique key(email),
-  passwd varchar(255) not null,
-  role enum('Sales Representative', 'Administrator') not null default 'Sales Representative',
-  id int(11) not null auto_increment,
-    primary key(id)
-) engine=innodb default charset=utf8;
 
 create table customers(
   name varchar(127) not null,
@@ -130,7 +122,7 @@ create user 'stock'@'localhost' identified by 'stock';
 grant all privileges on stock.* TO 'stock'@'localhost';
 /* all sales */
 
-create view sals as select w.id wid, w.name warehouse, p.id pid, p.name product, l.amount sales, i.occurence from warehouses w, products p, invoices i, invoice_lines l where l.invoice=i.id and p.id=l.product and i.warehouse=w.id and LOWER(i.cancelled)!='yes';
+create view sales as select w.id wid, w.name warehouse, p.id pid, p.name product, l.amount sales, i.occurence from warehouses w, products p, invoices i, invoice_lines l where l.invoice=i.id and p.id=l.product and i.warehouse=w.id and LOWER(i.cancelled)!='yes';
 
 
 /* sales summary */

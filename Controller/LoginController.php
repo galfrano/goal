@@ -6,23 +6,24 @@ use View\UserView as View;
 class LoginController{
 
 	protected $entity;
-	protected static $table = 'users', $user = 'email', $passwd = 'password'; //$user and $passwd are related to the form, not to the db
-
+	protected static $user = 'email', $passwd = 'password'; //$user and $passwd are related to the form, not to the db
+	
 	function __construct(){
-		$this->entity = new Entity(self::$table);
+		$this->entity = new Entity(\Configuration\USER['usersTable']);
 		$this->view = new View;
-		$error = false;
+		$this->login();
+	}
+	function login(){
 		if(!empty($_POST[self::$user]) && !empty($_POST[self::$passwd])){
-			if(User::i()->authenticate($_POST[self::$user], $_POST[self::$passwd])){
-				header('Refresh:0');}
-			else{
-				$error = true;}}
-		$this->notLoggedIn($error);}
-
+			User::i()->authenticate($_POST[self::$user], $_POST[self::$passwd]) ? header('Refresh:0') : $this->notLoggedIn(true) ;
+		}
+		$this->notLoggedIn(false);
+	}
 	function notLoggedIn($error){
 		$this->view->showLoginForm($error)->output();
-		exit;}
-
+		exit;
+	}
 	function signUp(){
-		$this->view->showSignUpForm()->output();}
+		$this->view->showSignUpForm()->output();
+	}
 }

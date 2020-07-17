@@ -1,38 +1,35 @@
-<?php /*by galfrano@gmail.com*/
+<?php
 
 namespace Model;
 
-class Entity{
+class Journaled extends Entity{
 
-	protected $pdoh, $id, $fieldExceptions = [];
+	protected $created, $modified, $by, $inactive, $group;
 
-	public $schema, $tn, $rpp = 20, $columns = '*';
+	//public $schema, $tn, $rpp = 20, $columns = '*';
 
-	function __construct($table){
-		$this->tn = $table;
-		$this->db = new Pdoh;
-		$this->schema = (new Schema($this->db))->$table;
+	function __construct($table, $config = false){
+		parent::__construct($table);
+		$config && $this->config = $config;
+		$this->inactive = array_search('tinyint(1)', $this->schema['columns']);
+		$this->by = key(array_filter($this->schema['parents'], function($parent){
+			return key_exists(Configuration\USER['usersTable'], $parent);
+		}));
+		list($this->created, $this->modified) = array_keys($this->schema['columms'], 'timestamp');
 	}
-	function __get($name){
-//		$fields = array_filter(array_keys($this->schema['columns']), function($field){
-//			return !in_array($field, $this->fieldExceptions);
-//		});
-		$gettables = ['fields'=>/*$fields*/array_keys($this->schema['columns']), 'pk'=>$this->schema['pk'], 'types'=>$this->schema['columns']];
-		return empty($gettables[$name]) ? NULL : $gettables[$name] ;
-	}
-//	function __unset($field){
-//		$this->fieldExceptions[] = $field;
-//	}
 	function getList($page = 1, $filters = [], $callback = false){
-//		is_callable($callback) ?: $callback = function($line)
-//		!$callback && !empty($this->fieldExceptions) && $callback = function(&$line){
-//			$line = array_diff_key($line, array_flip($this->fieldExceptions));
-//		};
-		return $this->db->query('select SQL_CALC_FOUND_ROWS * from '.$this->tn.$this->filters($filters).$this->page($page), $filters)->fetchAll($callback);
+		$this->inactive && $filters[$this->inactive] = 0;
+		return parent::getList($page, $filters, $callback);
 	}
-	private function page($page){
-		return is_numeric($page) && $this->rpp > 0 ? ' limit '.(($this->rpp*$page)-$this->rpp).', '.$this->rpp : '' ;
+	function getInactiveList($page = 1, $filters = [], $callback = false){
+		$this->inactive && $filters[$this->inactive] = 1;
+		return parent::getList($page, $filters, $callback);
 	}
+	function getListByUser($id){
+		$this->by && $filters[$this->by] = $id;
+		return parent::getList($page, $filters, $callback);
+	}
+	function getByUser
 	//FIXME!! children
 	function get($id, $children = [], $default = true){
 		$query = 'select '.$this->columns.' from '.$this->tn.(is_array($id) ? $this->filters($id) : ' where '.$this->schema['pk'].'=?');
@@ -144,3 +141,4 @@ class Entity{
 		$this->db->finish();
 	}
 }
+

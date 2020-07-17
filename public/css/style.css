@@ -1,5 +1,5 @@
 body{margin:0;}
-.wrapper{margin:0 auto; width:1024px;}
+.wrapper{margin:0 auto; padding:0 5%;}
 .form-wrapper{margin:0 auto; width:800px;}
 .wrapper div, .form-wrapper div{padding:10px 0;}
 button{margin:0 5px;}
@@ -22,3 +22,6 @@ th{text-align: center;}
 .actions form{display:inline-block;}
 .btn-default{color:#000;}
 .btn-default:hover{color:#00f;}
+tr td:last-child{text-align:right;}
+table{border-spacing: 2px; border-collapse: unset;}
+.action{width:250px;}

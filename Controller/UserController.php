@@ -17,6 +17,12 @@ class UserController extends CrudController{
 		$this->entity = new Entity($this->table = $table);
 		unset($this->entity->user);
 		empty($_POST) || $_POST += $this->filter;
-		parent::__construct($table, $path);}
-	
+		parent::__construct($table, $path);
+	}
+	function getMenu(){
+		return ['users'];
+	}
+	function getList(){
+		//$
+	}
 }

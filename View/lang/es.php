@@ -24,4 +24,11 @@
 'discount'=>'Descuento',
 'quantity'=>'Cantidad',
 'product'=>'Producto',
+'inbound'=>'Entradas de producto',
+'categories'=>'Categor&iacute;as',
+'warehouses'=>'Bodegas',
+'sales'=>'Ventas',
+'stock'=>'Existencias',
+'occurrence'=>'Fecha',
+'user'=>'Usuario',
 ];

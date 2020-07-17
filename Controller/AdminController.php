@@ -1,9 +1,10 @@
 <?php
 
 namespace Controller;
-use \View\InvoiceView;
-use \View\CrudView;
+use View\InvoiceView;
+use View\CrudView;
 use Model\Entity;
+use Utility\Reports;
 
 class AdminController extends CrudController{
 	use Reports;
@@ -12,32 +13,44 @@ class AdminController extends CrudController{
 	protected static $sections = ['users', 'categories', 'customers', 'products', 'warehouses', 'inbound', 'invoices', 'sales', 'stock'];
 	protected static $path = '/admin/';
 	
-
 	function __construct($table, $path){
 		$this->isAvailable($table);
-		parent::__construct($table, $path);}
-
+		parent::__construct($table, $path);
+	}
 	function isAvailable($table){
 		if(!in_array($table, self::$sections, true)){
-			throw new \Exception('No such entity available for Admin');}
+			throw new \Exception('No such entity available for Admin');
+		}
 		elseif($table === 'invoices'){
 			self::$actions[] = 'print';
-			$this->view = new InvoiceView(static::$sections, static::$path);}
+			$this->view = new InvoiceView(static::$sections, static::$path);
+		}
 		elseif($table === 'stock'){
 			$this->table = 'stock';
-			$this->entity = new Entity('sales');}
+			$this->entity = new Entity('sales');
+		}
 		elseif($table === 'inbound'){ //TODO: correct dirty hack
-			CrudView::$delete = false;}}
-
+			CrudView::$delete = false;
+		}
+	}
+	function getMenu(){
+		return self::$sections;
+	}
 	function get(){
+		$this->table !== 'invoices' ?: $this->filter = ['cancelled'=>'No'];
 		if($this->table === 'sales'){
-			$this->sales();}
+			$this->sales();
+		}
 		elseif($this->table === 'stock'){
-			$this->stock();}
+			$this->stock();
+		}
 		elseif($this->table === 'invoices' && $this->action === 'print' && $this->id){
-			$this->view->showInvoice($this->entity, $this->id)->output();}
+			$this->view->showInvoice($this->entity, $this->id)->output();
+		}
 		else{
-			parent::get();}}
+			parent::get();
+		}
+	}
 }
 /*
 admin/reports/view/sales/20200115-20201131	(view name, dates/filters)

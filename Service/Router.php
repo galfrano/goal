@@ -5,12 +5,13 @@ namespace Service;
 use Controller\AdminController;
 use Controller\LoginController;
 use Controller\UserController;
+use Xml\Tag;
 
 class Router{
 	protected static $controllers = ['crud'=>'CrudController', 'admin'=>'AdminController', 'sales'=>'SalesRepController', 'invoices'=>'InvoicesController'], $defaultPath = '/admin/users/1';
 	private $user;
 	function __construct($path){
-		$this->user = User::i()->getSession(!empty($_POST['logout']));
+		$this->user = !empty($_POST['logout']) ? User::i()->logout() : User::i()->getSession() ;
 		!$this->user && new LoginController;
 		$this->section($path);}
 

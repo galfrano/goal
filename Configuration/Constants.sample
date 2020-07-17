@@ -11,11 +11,10 @@ $constants = [
 	'P' => 'pasword',
 
 //--------------------------------------------------OTHER--------------------------------------------------\\
-	'PATH' => dirname(__DIR__),
 	'LANG' =>  dirname(__DIR__).'/View/lang/es.php',
 	'TPL' => 'tpl',
 	'DUMP' => 'dump.sql',
-
+	'USER' => ['sessionKey'=>'sessionKey', 'usersTable'=>'usersTable', 'usernameColumn'=>'usernameColumn', 'passwordColumn'=>'passwordColumn'],
 ];
 
 foreach($constants as $key => $value)

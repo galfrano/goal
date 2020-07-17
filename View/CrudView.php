@@ -9,6 +9,7 @@ class CrudView extends AbstractView{
 
 	public static $delete = true, $edit = true;
 
+	// FIXME
 	function __construct($sections = [], $path = ''){
 		parent::__construct();
 		$this->menuBar($sections, $path);}
@@ -21,7 +22,7 @@ class CrudView extends AbstractView{
 		$catalogs = $entity->getParents();
 		foreach($entity->fields as $column){
 			$row0->th()->say($column);}
-		$row0->th()->say('action');
+		$row0->th(['class'=>'action'])->say('action');
 		foreach($entity->getList($page, $search) as $line){
 			$row = $table->tr();
 			foreach($line as $col => $value){

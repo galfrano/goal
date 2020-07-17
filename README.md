@@ -10,5 +10,5 @@ From commit on 2020-01-16 set up should be relatively easy: only editing public/
 - Table relationships detection based on information_schema.
 - Object based HTML templating system with tree access functionality and raw file consumption.
 - CRUD functionality with automatic inclusion of catalogs (parents) and optional children.
-- Simple user system (adding granularity is a work in progess).
+- User system based in limited granularity
 - Multilanguage capabilities.

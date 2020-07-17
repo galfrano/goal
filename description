@@ -55,4 +55,27 @@ admin/invoices (invoice crud)
 admin/warehouses (custom controller)
 admin/cancel
 
+- USER RIGHTS
+* row specific (requires user field)
+* controller specific
+
+
+//dario
+
+soft delete
+move inbound
+outbound (comment pids, qties)
+total sales (filters)
+
+
+log through types (timestamps, ) and one def of foreign key (config->userTable)
+
+crud controllers should have their own sub-menu configuration 
+we will hanldle two levels for now: controller->entity->action
+eg reports->sales->march
+eg representativeCrud->invoices->create
+configuration needs list of controllers available for each user level -> security will be handled by router
+
+
+user system => user restricted table has these access levels: user, group, public (and admin), these groups given by a column in the table itself. groups, user_groups, and users are required.
 

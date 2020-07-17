@@ -1,3 +1,4 @@
-sf.sql
+./*.sql
 Configuration/Constants.php
 Model/*/*.php
+!./acl.sql

@@ -12,97 +12,126 @@ class Tag{
 
 	function __construct($tag, $parent = false){
 		!$parent ?: $this->callbacks['parent'] = $parent;
-		!is_null(self::$language) ?: self::$language = include \Configuration\LANG;
+		!is_null(self::$language) ?: self::setLanguage(\Configuration\LANG['default']);
 		list($this->tag, $this->attributes) =  is_array($tag) ? [array_shift($tag), $tag] : [$tag, []] ;
 		empty($tag['id']) || isset(static::$ids[$tag['id']]) ?: static::$ids[$tag['id']] = $this;
-		empty($tag['name']) ?: $this->registerName($tag['name']);}
-
+		empty($tag['name']) ?: $this->registerName($tag['name']);
+	}
+	static function setLanguage($language){
+		is_null(self::$language) or die('Unable to set language, Tag has been constructed');
+		$conf = \Configuration\LANG;
+		self::$language = include(\Configuration\LANG['dir'].$language.'.php');
+	}
 	function registerName($name){
 		if(empty(static::$names[$name])){
-			static::$names[$name] = $this;}
+			static::$names[$name] = $this;
+		}
 		elseif(!is_array(static::$names[$name])){
-			static::$names[$name] = [static::$names[$name], $this];}
+			static::$names[$name] = [static::$names[$name], $this];
+		}
 		else{
-			static::$names[$name][] = $this;}}
-
+			static::$names[$name][] = $this;
+		}
+	}
 	function __clone(){
 		$children = $this->children;
 		$this->children = [];
 		unset($this->attributes['id']);
 		foreach($children as $child){
-			$this->children[] = is_object($child) ? clone $child : $child ;}}
-
+			$this->children[] = is_object($child) ? clone $child : $child ;
+		}
+	}
 	function indexName($index){
 		if(!empty($this->attributes['disabled'])){
 			unset($this->attributes['disabled']);
-			$this->attributes['type'] = 'hidden';}
+			$this->attributes['type'] = 'hidden';
+		}
 		$this->attributes['name'] = str_replace('[]', '['.$index.']', $this->attributes['name']);
-		static::$names[$this->attributes['name']] = $this;}
+		static::$names[$this->attributes['name']] = $this;
+	}
 
 	function __get($tag){
-		return empty($this->attributes[$tag]) ? $this->find($tag): $this->attributes[$tag] ;}
-
+		return empty($this->attributes[$tag]) ? $this->find($tag): $this->attributes[$tag] ;
+	}
 	static function setValue($name, $val){
 		if($element = Tag::getByName($name)){
-			is_array($element) ? array_walk($element, function($e)use($val){$e->value !== $val ?: $e->checked = true;}) : $element->val($val);}}
-
+			is_array($element) ? array_walk($element, function($e)use($val){
+				$e->value !== $val ?: $e->checked = true;
+			}) : $element->val($val);
+		}
+	}
 	private function val($val){
 		if($this->tag == 'input'){
-			$this->attributes['value'] = $val;}
+			$this->attributes['value'] = $val;
+		}
 		elseif($this->tag =='textarea'){
-			$this->text($val);}
+			$this->text($val);
+		}
 		elseif($this->tag == 'select'){
-			$this->find(['value'=>$val])[0]->selected = true;}}
-
+			$this->find(['value'=>$val])[0]->selected = true;
+		}
+	}
 	function find($tag, &$result = []){//find all matches
 		$match = $this->match($tag, $result);
 		foreach($this->children as $child){
-			!is_object($child) ?: $child->find($tag, $result);}
-		return $result;}
-
+			!is_object($child) ?: $child->find($tag, $result);
+		}
+		return $result;
+	}
 	function get($tag, &$result = false){//find first match only
 		if($registered = $this->registered($tag)){
-			$result = $registered;}
+			$result = $registered;
+		}
 		elseif($this->match($tag, $result)){
-			$result = $this;}
+			$result = $this;
+		}
 		elseif($result === false){
 			foreach($this->children as $child){
-				!is_object($child) ?: $child->get($tag, $result);}}
-		return $result;}
-
+				!is_object($child) ?: $child->get($tag, $result);
+			}
+		}
+		return $result;
+	}
 	function registered($tag){
 		$registered = false;
 		if(is_array($tag)){
 			if(key_exists('id', $tag)){
-				$registered = self::getById($tag['id']);}
+				$registered = self::getById($tag['id']);
+			}
 			elseif(key_exists('name', $tag)){
-				$registered = self::getByName($tag['name']);}
+				$registered = self::getByName($tag['name']);
+			}
 //			elseif(key_exists('data-tpl', $tag)){
 //				empty(self::$tpl[$tag['data-tpl']]) ?: $registered = self::$tpl[$tag['data-tpl']];}
-}
-		return $registered ;}
-
+		}
+		return $registered ;
+	}
 	function match($tag, &$result = []){
 		if(is_string($tag)){
-			$match = $this->tag == $tag;}
+			$match = $this->tag == $tag;
+		}
 		elseif(is_array($tag)){
 			$match = true;
 			foreach($tag as $attr => $value){
-				((isset($this->attributes[$attr]) && $this->attributes[$attr] == $value) || ($attr == 0 && $value == $this->tag)) ?: $match = false ;}}
+				((isset($this->attributes[$attr]) && $this->attributes[$attr] == $value) || ($attr == 0 && $value == $this->tag)) ?: $match = false ;
+			}
+		}
 		!$match || !is_array($result) ?: $result[] = $this;
-		return $match;}
-
+		return $match;
+	}
 	function tab(){
-		return str_repeat("\t", self::$tab);}
-
+		return str_repeat("\t", self::$tab);
+	}
 	function __toString(){
 		$string = '<'.$this->tag.$this->attr().$this->extra;
 		if(in_array($this->tag, self::$single)){
-			$string .= $this->tag == '!doctype' ? '>'."\n" : ' />';}
+			$string .= $this->tag == '!doctype' ? '>'."\n" : ' />';
+		}
 		else{
-			$string .= '>'.$this->children().'</'.$this->tag.'>';}
-		return $this->tab().$string;}
-
+			$string .= '>'.$this->children().'</'.$this->tag.'>';
+		}
+		return $this->tab().$string;
+	}
 	function __set($attribute, $value){
 		$this->attributes[$attribute] = $value;
 		if(in_array($attribute, ['name', 'id'])){
