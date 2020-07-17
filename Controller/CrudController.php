@@ -19,10 +19,6 @@ namespace Controller;
 use Model\Entity;
 use View\CrudView;
 
-interface Routeable{
-	function getMenu()/*: array*/;
-}
-
 abstract class CrudController implements Routeable{
 
 	protected static $actions = ['edit', 'delete', 'new'], $children = [], $sections = [], $path;
