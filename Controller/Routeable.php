@@ -2,5 +2,5 @@
 namespace Controller;
 
 interface Routeable{
-	function getMenu()/*: array*/;
+	static function getSubMenu()/*: array*/;
 }

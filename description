@@ -64,7 +64,7 @@ admin/cancel
 
 soft delete
 move inbound
-outbound (comment pids, qties)
+outbound (comment pids, qties (promocion))
 total sales (filters)
 
 

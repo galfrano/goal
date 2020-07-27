@@ -7,8 +7,8 @@ class InvoiceView extends CrudView{
 	function showUpdateForm($entity, $id, $children = []){
 		parent::showUpdateForm($entity, $id, $children);
 		$this->html->get(['id'=>'actions'])->a(['href'=>self::getUrl(['action'], ['print']), 'class'=>'btn btn-default'])->say('print');
-		return $this;}
-
+		return $this;
+	}
 	function showInvoice($e, $id){
 		$invoice = (new Entity('invoices'))->get($id);
 //		$invoice
@@ -32,16 +32,17 @@ class InvoiceView extends CrudView{
 		$data['final'] = self::money($total*1.21);
 		$data['invoice_number'] = str_pad($invoice['id'], 4, "0", \STR_PAD_LEFT);
 //var_dump($data); die;
-		list($this->doctype, $this->html) = Loader::tags(file_get_contents(\APP_PATH.'/View/html/invoice.html'));
+		list($this->doctype, $this->html) = Loader::tags(file_get_contents(__DIR__.'/html/invoice.html'));
 		$this->setAssetsPath();
 		$this->html->populate($data);
 		$this->html->get(['id'=>'products'])->iterate($data['lines']);
-		return $this;}
-
+		return $this;
+	}
 	private static function add10Days($date){
 		$parts = explode('-', $date);
-		return date('Y-m-d', mktime(0, 0, 0, $parts[1], $parts[2]+10, $parts[0]));}
-
+		return date('Y-m-d', mktime(0, 0, 0, $parts[1], $parts[2]+10, $parts[0]));
+	}
 	private static function money($num){
-		return number_format($num, 2, '.', ',').'Kč';}
+		return number_format($num, 2, '.', ',').'Kč';
+	}
 }

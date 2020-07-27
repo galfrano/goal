@@ -2,64 +2,72 @@
 namespace View;
 use \Xml\Loader;
 use \Xml\Tag;
+use \Service\User;
+use \Service\Path;
 abstract class AbstractView implements ViewInterface{
 
 	protected $html, $doctype, $dom;
 	protected static $urlMap;
+
 	public function __construct($tpl = false){
 		is_string($tpl) ?: $tpl = \Configuration\TPL;
-		list($this->doctype, $this->html) = Loader::tags(file_get_contents(\APP_PATH.'/View/html/'.$tpl.'.html'));
-		$this->setAssetsPath();}
-
+		list($this->doctype, $this->html) = Loader::tags(file_get_contents(__DIR__.'/html/'.$tpl.'.html'));
+		$this->setAssetsPath();
+		$this->menuBar(User::getUserMenu());
+	}
 	protected static function template($template){
-		return current(Loader::tags(file_get_contents(\APP_PATH.'/View/html/'.$template.'.html')));}
-
+		return current(Loader::tags(file_get_contents(__DIR__.'/html/'.$template.'.html')));
+	}
 	public function output(){
-		echo $this->doctype, $this->html;}
-
+		echo $this->doctype, $this->html;
+	}
 	protected function setAssetsPath(){
 		$head = $this->html->get('head');
 		foreach($head->find('link') as &$link){
-			$link->href = \MAIN_URL.$link->href;}
+			$link->href = \Configuration\MAIN_URL.$link->href;
+		}
 		foreach($head->find('script') as &$script){
-			$script->src = \MAIN_URL.$script->src;}}
-
-	public static function getUrl($paths = [], $replace = []){
-		$remove = array_filter(explode('/', \MAIN_URL));
-		$parts = array_values(array_filter(explode('/', $_SERVER['REQUEST_URI']), function($part) use($remove){
-			return !empty($part) && !in_array($part, $remove, true);}));
-		foreach($paths as $key => $path){
-			if(!empty($path) && !empty($i = static::$urlMap[$path])){
-				$parts[$i] = $replace[$key];}}
-		return \MAIN_URL.'/'.implode('/', array_filter($parts)).'/';}
-
-	protected function menuBar($sections = [], $path = ''){
+			$script->src = \Configuration\MAIN_URL.$script->src;
+		}
+	}
+	private function menuBar($controllers){
 		$bar = new Tag(['div', 'class'=>'topbar']);
 		$menu = $bar->div();
-		$bar->div()->form(['method'=>'post'])->button(['name'=>'logout', 'value'=>1, 'class'=>'btn btn-warning'])->say('logout');
-		for($x = 0, $c = count($sections); $x<$c; $menu->a(['href'=>\MAIN_URL.$path.$sections[$x].'/1'])->say($sections[$x++]));
-		$this->html->get('body')->text($bar);}
-
+		$controllers && $bar->div()->form(['method'=>'post'])->button(['name'=>'logout', 'value'=>1, 'class'=>'btn btn-warning'])->say('logout');
+		for($x = 0, $c = count($controllers); $x<$c; $menu->a(['href'=>\Configuration\MAIN_URL.'/'.$controllers[$x]])->say($controllers[$x++]));
+		$this->html->get('body')->text($bar);
+	}
+	public function subMenuBar($sections){
+		$bar = $this->html->get('body')->div(['class'=>'sidebar']);
+		for($x = 0, $c = count($sections); $x<$c; $bar->div()->a(['href'=>\Configuration\MAIN_URL.'\\'.Path::getParam('controller').'/'.$sections[$x]])->say($sections[$x++]));
+	}
 	public function addOn($id, $buttons){
 		$tag = $this->html->get(['id'=>$id]);
 		foreach($buttons as $name=>$button){
-			$tag->a(['href'=>self::getUrl().'action='.$button, 'class'=>'btn btn-success'])->say($name);}
-		return $this;}
-
+			$tag->a(['href'=>Path::getUrl().'action='.$button, 'class'=>'btn btn-success'])->say($name);
+		}
+		return $this;
+	}
 	protected function tableize($data){
 		$head = array_keys(current($data));
 		$table = new Tag(['table', 'class'=>'table table-striped']);
 		$thr = $table->tr();
 		foreach($head as $th){
-			$thr->th()->say($th);}
+			$thr->th()->say($th);
+		}
 		foreach($data as $row){
 			$tdr = $table->tr();
 			foreach($row as $td){
-				$tdr->td()->text($td);}}
-		return $table;}
-
+				$tdr->td()->text($td);
+			}
+		}
+		return $table;
+	}
 	public function load($data){
 		foreach($data as $id=>$pop){
 			$tag = $this->html->get(['id'=>$id]);
 			!empty($tag) or die('ID '.$id.' not found');
-			is_array(current($pop)) ? $tag->iterate($pop) : $tag->populate($pop);}}}
+			is_array(current($pop)) ? $tag->iterate($pop) : $tag->populate($pop);
+		}
+	}
+}

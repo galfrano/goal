@@ -31,4 +31,6 @@
 'stock'=>'Existencias',
 'occurrence'=>'Fecha',
 'user'=>'Usuario',
+'user_admin'=>'Administraci&oacute;n de Usuarios',
+'data_entry'=>'Captura de datos',
 ];

@@ -1,6 +1,7 @@
 <?php
 namespace View;
 use \Xml\Tag;
+use \Service\Path;
 class CrudView extends AbstractView{
 
 	public $session;
@@ -9,29 +10,24 @@ class CrudView extends AbstractView{
 
 	public static $delete = true, $edit = true;
 
-	// FIXME
-	function __construct($sections = [], $path = ''){
-		parent::__construct();
-		$this->menuBar($sections, $path);}
-
 	function showList($entity, $page = 1, $search = []){
 		$div = $this->html->get('body')->div(['class'=>'wrapper']);
-		$div->div()->a(['href'=>self::getUrl(['action'], ['new']), 'class'=>'btn btn-success'])->say('new');
+		$div->div()->a(['href'=>Path::getUrl(['action'], ['new']), 'class'=>'btn btn-success'])->say('new');
 		$table = $div->table(['class'=>'table table-striped']);
-		$row0 = $table->tr();
+		$hRow = $table->tr();
 		$catalogs = $entity->getParents();
 		foreach($entity->fields as $column){
-			$row0->th()->say($column);}
-		$row0->th(['class'=>'action'])->say('action');
+			$hRow->th()->say($column);}
+		$hRow->th(['class'=>'action'])->say('action');
 		foreach($entity->getList($page, $search) as $line){
 			$row = $table->tr();
 			foreach($line as $col => $value){
 				$row->td()->text(key_exists($col, $catalogs) ? $catalogs[$col][$value] : $value);}
 			$td = $row->td(['class'=>'actions']);
-			static::$edit && $td->a(['href'=>self::getUrl(['action'], ['edit']).$line[$entity->pk], 'class'=>'btn btn-info btn-xs'])->say('edit');
-			static::$delete && $td->form(['method'=>'post', 'action'=>self::getUrl().'delete/'.$line[$entity->pk]])->button(['class'=>'btn btn-danger btn-xs', 'name'=>'delete', 'value'=>1])->say('delete');}
+			static::$edit && $td->a(['href'=>Path::getUrl(['action'], ['edit']).$line[$entity->pk], 'class'=>'btn btn-info btn-xs'])->say('edit');
+			static::$delete && $td->form(['method'=>'post', 'action'=>Path::getUrl().'delete/'.$line[$entity->pk]])->button(['class'=>'btn btn-danger btn-xs', 'name'=>'delete', 'value'=>1])->say('delete');}
 		$pager = $div->div(['class'=>'pager']);
-		for($p = 1, $pages = $entity->pages(); $p <= $pages; $pager->a(['class'=>'btn btn-xs btn-'.($page == $p ? 'default active' : 'primary'), 'href'=>self::getUrl(['page'], [$p])])->text($p++));
+		for($p = 1, $pages = $entity->pages(); $p <= $pages; $pager->a(['class'=>'btn btn-xs btn-'.($page == $p ? 'default active' : 'primary'), 'href'=>Path::getUrl(['page'], [$p])])->text($p++));
 		return $this;}
 
 	function showUpdateForm($entity, $id, $children = []){
@@ -89,7 +85,7 @@ class CrudView extends AbstractView{
 	//TODO: include more data types
 	protected static function form($entity){
 		$div = new Tag(['div', 'class'=>'form-wrapper']);
-		$div->div(['id'=>'actions'])->a(['href'=>self::getUrl(['action', 'id'], ['', '']), 'class'=>'btn btn-primary'])->say('back');
+		$div->div(['id'=>'actions'])->a(['href'=>Path::getUrl(['action', 'id'], ['', '']), 'class'=>'btn btn-primary'])->say('back');
 		$div->div[0]->div(['id'=>'extra']);
 		$form = $div->form(['method'=>'post']);
 		$table = $form->table(['class'=>'table table-bordered']);

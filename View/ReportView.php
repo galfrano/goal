@@ -5,10 +5,6 @@ class ReportView extends AbstractView{
 
 	protected static $urlMap = ['page'=>2, 'action'=>3, 'id'=>4];
 
-	function __construct($sections = [], $path = ''){
-		parent::__construct();
-		$this->menuBar($sections, $path);
-	}
 	function showSales($data){
 		$wrapper = $this->html->get('body')->div(['class'=>'wrapper']);
 		if($data){

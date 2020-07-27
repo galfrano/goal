@@ -1,6 +1,8 @@
 body{margin:0;}
-.wrapper{margin:0 auto; padding:0 5%;}
-.form-wrapper{margin:0 auto; width:800px;}
+.wrapper, .form-wrapper{width:80%;}
+.wrapper, .sidebar, .form-wrapper{display:inline-block; vertical-align:top;}
+.sidebar{padding:0 30px;}
+.sidebar a{padding:10px 20px; display:block;}
 .wrapper div, .form-wrapper div{padding:10px 0;}
 button{margin:0 5px;}
 .topbar{margin:10px auto; width:1024px;}
@@ -25,3 +27,4 @@ th{text-align: center;}
 tr td:last-child{text-align:right;}
 table{border-spacing: 2px; border-collapse: unset;}
 .action{width:250px;}
+

@@ -34,6 +34,12 @@ class User /*implements UserInterface*/{
 	static function settings($settings){
 //		self::$user['settings'] = 
 	}
+	static function getUserMenu(){
+		return self::getSession() ? ['user_administration', 'data_entry', 'reports'] : [] ;
+	}
+	static function getDefault(){
+		return self::getSession() ? ['data_entry', false, 1, false, false] : [] ;
+	}
 	static function encrypt($user){
 		return [self::$passwd=>password_hash($user[self::$passwd], \PASSWORD_DEFAULT)]+$user;
 	}
