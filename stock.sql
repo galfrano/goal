@@ -111,12 +111,55 @@ for each row
       order by l.id desc limit 1);
 
 
+create table product_relocation(
+  from_warehouse int(11) not null,
+    foreign key(from_warehouse) references warehouses(id),
+  to_warehouse int(11) not null,
+    foreign key(to_warehouse) references warehouses(id),
+  product int(11) not null,
+    foreign key(product) references products(id),
+  qty int(11) not null,
+  user int(11) not null,
+    foreign key(user) references users(id),
+  occurrence timestamp not null default current_timestamp,
+  id int(11) not null auto_increment,
+    primary key(id)
+) engine=innodb default charset=utf8;
+
+create table outbound(
+  warehouse int(11) not null,
+    foreign key(warehouse) references warehouses(id),
+  product int(11) not null,
+    foreign key(product) references products(id),
+  qty int(11) not null,
+  user int(11) not null,
+    foreign key(user) references users(id),
+  occurrence timestamp not null default current_timestamp,
+  id int(11) not null auto_increment,
+    primary key(id)
+) engine=innodb default charset=utf8;
+
+create table groups(
+  name varchar(127) not null,
+  id int(11) not null auto_increment,
+    primary key(id)
+) engine=innodb default charset=utf8;
+
+create table user_groups(
+  user int(11) not null,
+    foreign key(user) references users(id),
+  groupid int(11) not null,
+    foreign key(groupid) references groups(id),
+  id int(11) not null auto_increment,
+    primary key(id)
+) engine=innodb default charset=utf8;
 
 
-insert into users (email, passwd, role) values ('galfrano@gmail.com', '$2y$10$8qkRTbwzdI/gWHIKwW6gBO1Xr4R.SXZ07aulG87g4f1JNzOHpihbS', 'Administrator');
 
 insert into users (email, passwd, role) values ('dariol@agavespirits.eu', '$2y$10$gL9mhjfZtpXfVhjXRNX2GeOlC2iVretqU8WgMX8MUmEc8NlpVZGE.', 'Administrator');
+insert into users (email, passwd, role) values ('galfrano@gmail.com', '$2y$10$8qkRTbwzdI/gWHIKwW6gBO1Xr4R.SXZ07aulG87g4f1JNzOHpihbS', 'Administrator');
 
+alter table users add language enum('es', 'en', 'cs') not null default 'es' after role;
 
 create user 'stock'@'localhost' identified by 'stock';
 grant all privileges on stock.* TO 'stock'@'localhost';

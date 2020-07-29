@@ -31,6 +31,7 @@ class CrudView extends AbstractView{
 		return $this;}
 
 	function showUpdateForm($entity, $id, $children = []){
+//die('??');
 		$form = self::form($entity);
 		$table = $form->table[0];
 		foreach($children as $child){
@@ -101,6 +102,10 @@ class CrudView extends AbstractView{
 				$select = $tr->td()->select(['name'=>$th]);
 				foreach($catalogs[$th] as $id=>$name){
 					$select->option(['value'=>$id])->text($name);}}
+			elseif($types[$th] === 'varchar(255)'){
+				$cell = $tr->td();
+				$cell->input(['name'=>$th.'[0]', 'class'=>'form-control','type'=>'password']);
+				$cell->input(['name'=>$th.'[1]', 'class'=>'form-control','type'=>'password']);}
 			elseif($types[$th] !== 'timestamp'){
 				$tr->td()->child(self::field($th, $types[$th])+($th == $entity->pk ? ['disabled'=>1] : []));}}
 		return $div;}
@@ -127,8 +132,8 @@ class CrudView extends AbstractView{
 			$attributes += ['type'=>'number', 'min'=>0, 'max'=>$max-1];}
 		elseif($name === 'email'){
 			$attributes += ['type'=>'email'];}
-		elseif($type === 'varchar(255)'){
-			$attributes += ['type'=>'password'];}
+//		elseif($type === 'varchar(255)'){
+//			$attributes += ['type'=>'password'];}
 		else{
 			$attributes += $type == 'date' ? ['type'=>'date'] : ['type'=>'text'] ;}
 		return $attributes;}

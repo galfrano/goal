@@ -7,7 +7,8 @@ body{margin:0;}
 button{margin:0 5px;}
 .topbar{margin:10px auto; width:1024px;}
 .topbar div{display:table-cell;}
-.topbar a{display:inline-block; padding:0 10px;}
+.topbar a{display:inline-block; padding:12px 30px;}
+.topbar button{margin-left:70px;}
 .form-control{padding:1px;}
 input.form-control{height:25px;}
 .button-cell{text-align:center;}
@@ -27,4 +28,5 @@ th{text-align: center;}
 tr td:last-child{text-align:right;}
 table{border-spacing: 2px; border-collapse: unset;}
 .action{width:250px;}
-
+.active{color:#222; background-color:#0ce3ac; border-radius:4px;}
+.active:hover{color:#222; font-weight:bold;}

@@ -2,41 +2,36 @@
 
 namespace Service;
 
-//use Application\AdminController;
-use Controller\LoginController;
-use Controller\UserController;
+use \Controller\LoginController;
+use \Xml\Tag;
+
+//TODO: add some validations
 
 class Router{
+	use \Utility\Killable;
 	
-	protected static $controllers = ['data_entry'=>'Application\DataEntryController', 'reports'=>'Application\ReportsController', 'user_administration'=>'Controller\UserAdminController'], $defaultPath = '/admin/categories/1';
-	private $user;
-	use \Utility\Path;
+	protected static $controllers = [
+		'data_entry'=>'Application\DataEntryController',
+		'reports'=>'Application\ReportsController',
+		'user_administration'=>'Controller\UserAdminController',
+	];
 	function __construct(){
 		$this->user = !empty($_POST['logout']) ? User::i()->logout() : User::i()->getSession() ;
 		!$this->user && new LoginController;
+		$this->setLanguage();
 		$this->handlePath();
 	}
-/*	private function section($path){//'crud/users/4/edit/35'
-		empty($path) && header('location: '.\MAIN_URL.static::$defaultPath);
-		count($path) >= 3 ?: $path = $path+
-var_dump($path);die;
-		if( || count($path) < 3){
-			}
-		elseif($path[0] === 'admin'){
-			new AdminController($path[1], [@$path[2], @$path[3], @$path[4]]);
+	public function setLanguage(){
+		if(!empty($_POST['changeUserLanguage'])){
+			User::updateLanguage($this->user['language'] = $_POST['changeUserLanguage']);
 		}
-		elseif($path[0] === 'sales-rep'){
-			new UserController($path[1], [@$path[2], @$path[3], @$path[4]]);
-		}
-		else{
-			echo 'Path not found ';
-			var_dump($path);
-		}
-	}*/
+		Tag::setLanguage($this->user['language']);
+	}
 	private function handlePath(){
-		$controller = self::$controllers[Path::getParam('controller')];
-		//var_dump(current($controller::getSubMenu()));
-		!empty(Path::getParam('section')) || Path::setSection(current($controller::getSubMenu()));
-		new $controller();
+		$controller = Path::getParam('controller');
+		key_exists($controller, self::$controllers) or self::kill('No such path '.$controller);
+		$class = self::$controllers[$controller];
+		!empty(Path::getParam('section')) || Path::setSection(current($class::getSubMenu()));
+		new $class();
 	}
 }

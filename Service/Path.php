@@ -10,7 +10,7 @@ class Path{
 			return static::$params;
 		}
 		$keys = ['controller', 'section', 'page', 'action', 'id'];
-		$params = array_values(array_filter(explode('/', str_replace(\Configuration\MAIN_URL, '', $_SERVER['REQUEST_URI']))));
+		$params = array_values(array_filter(explode('/', str_replace(/*explode('/', \Configuration\MAIN_URL)*/'dario', '', $_SERVER['REQUEST_URI']))));
 		return static::$params = array_combine($keys, $params+User::getDefault());
 	}
 	public static function getParam($name){

@@ -14,21 +14,17 @@ class Entity{
 		$this->schema = (new Schema($this->db))->$table;
 	}
 	function __get($name){
-//		$fields = array_filter(array_keys($this->schema['columns']), function($field){
-//			return !in_array($field, $this->fieldExceptions);
-//		});
-		$gettables = ['fields'=>/*$fields*/array_keys($this->schema['columns']), 'pk'=>$this->schema['pk'], 'types'=>$this->schema['columns']];
+		$fields = $this->columns !== '*' ? explode(', ', $this->columns) : array_keys($this->schema['columns']) ;
+		$gettables = ['fields'=>$fields, 'pk'=>$this->schema['pk'], 'types'=>$this->schema['columns']];
 		return empty($gettables[$name]) ? NULL : $gettables[$name] ;
 	}
-//	function __unset($field){
-//		$this->fieldExceptions[] = $field;
-//	}
+	function setColumns($columns){
+		//TODO: validate agains schema
+		$this->columns = $columns;
+		return $this;
+	}
 	function getList($page = 1, $filters = [], $callback = false){
-//		is_callable($callback) ?: $callback = function($line)
-//		!$callback && !empty($this->fieldExceptions) && $callback = function(&$line){
-//			$line = array_diff_key($line, array_flip($this->fieldExceptions));
-//		};
-		return $this->db->query('select SQL_CALC_FOUND_ROWS * from '.$this->tn.$this->filters($filters).$this->page($page), $filters)->fetchAll($callback);
+		return $this->db->query('select SQL_CALC_FOUND_ROWS '.$this->columns.' from '.$this->tn.$this->filters($filters).$this->page($page), $filters)->fetchAll($callback);
 	}
 	private function page($page){
 		return is_numeric($page) && $this->rpp > 0 ? ' limit '.(($this->rpp*$page)-$this->rpp).', '.$this->rpp : '' ;
@@ -111,8 +107,14 @@ class Entity{
 		unset($columnSchema[$this->schema['pk']]);
 		$columns = array_keys($columnSchema);
 		$tokens = [];
-		foreach($columns as $column){
-			$tokens[] = key_exists($column, $post) ? $post[$column] : NULL ;}
+		foreach($columns as $k => $column){
+			if(key_exists($column, $post)){
+				$tokens[] = $post[$column];
+			}
+			else{
+				unset($columns[$k]);
+			}
+		}
 		$tokens[] = $id;
 		$this->db->query('update '.$this->tn.' set '.implode('=?, ', $columns).'=? where '.$this->pk.'=?', $tokens);
 		foreach($this->schema['children'] as $child=>$relation){

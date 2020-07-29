@@ -2,11 +2,14 @@
 namespace View;
 use \Xml\Loader;
 use \Model\Entity;
+use \Service\Path;
 class InvoiceView extends CrudView{
 
 	function showUpdateForm($entity, $id, $children = []){
+//		die('!');
 		parent::showUpdateForm($entity, $id, $children);
-		$this->html->get(['id'=>'actions'])->a(['href'=>self::getUrl(['action'], ['print']), 'class'=>'btn btn-default'])->say('print');
+
+		$this->html->get(['id'=>'actions'])->a(['href'=>Path::getUrl(['action'], ['print']), 'class'=>'btn btn-default'])->say('print');
 		return $this;
 	}
 	function showInvoice($e, $id){

@@ -30,16 +30,20 @@ abstract class AbstractView implements ViewInterface{
 			$script->src = \Configuration\MAIN_URL.$script->src;
 		}
 	}
+	protected static function isActive($k, $v){
+		return Path::getParam($k) === $v ? ['class'=>'active'] : [] ;
+	}
 	private function menuBar($controllers){
 		$bar = new Tag(['div', 'class'=>'topbar']);
 		$menu = $bar->div();
 		$controllers && $bar->div()->form(['method'=>'post'])->button(['name'=>'logout', 'value'=>1, 'class'=>'btn btn-warning'])->say('logout');
-		for($x = 0, $c = count($controllers); $x<$c; $menu->a(['href'=>\Configuration\MAIN_URL.'/'.$controllers[$x]])->say($controllers[$x++]));
+		for($x = 0, $c = count($controllers); $x<$c; $menu->div()->a(['href'=>\Configuration\MAIN_URL.'/'.$controllers[$x]]+self::isActive('controller', $controllers[$x]))->say($controllers[$x++]));
 		$this->html->get('body')->text($bar);
 	}
 	public function subMenuBar($sections){
 		$bar = $this->html->get('body')->div(['class'=>'sidebar']);
-		for($x = 0, $c = count($sections); $x<$c; $bar->div()->a(['href'=>\Configuration\MAIN_URL.'\\'.Path::getParam('controller').'/'.$sections[$x]])->say($sections[$x++]));
+		$baseUrl = \Configuration\MAIN_URL.'\\'.Path::getParam('controller').'/';
+		for($x = 0, $c = count($sections); $x<$c; $bar->div()->a(['href'=>$baseUrl.$sections[$x]]+self::isActive('section', $sections[$x]))->say($sections[$x++]));
 	}
 	public function addOn($id, $buttons){
 		$tag = $this->html->get(['id'=>$id]);

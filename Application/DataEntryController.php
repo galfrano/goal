@@ -1,36 +1,44 @@
 <?php
 
 namespace Application;
-use View\InvoiceView;
-use View\CrudView;
-use Model\Entity;
-use Utility\Reports;
-use Controller\CrudController;
+use \View\InvoiceView;
+use \View\CrudView;
+use \Model\Entity;
+use \Utility\Reports;
+use \Service\Path;
+use \Controller\CrudController;
 
 class DataEntryController extends CrudController{
 	protected static $children = ['products'=>['prices'], 'invoices'=>['invoice_lines']];
-	protected static $sections = ['categories', 'customers', 'products', 'warehouses', 'inbound', 'invoices'];
-	protected static $path = '/admin/';
+	protected static $sections = ['categories', 'customers', 'products', 'warehouses', 'inbound', 'invoices', 'product_relocation', 'cancelled_invoices', 'outbound'];
 
+	function __construct(){
+		$this->isAvailable(Path::getParam('section'));
+		parent::__construct();
+	}
 	static function getSubMenu(){
 		return self::$sections;
 	}
-	function isAvailable($table){
-		if(!in_array($table, self::$sections, true)){
-			throw new \Exception('No such entity available for Admin: '.$table);
+	function isAvailable($section){
+		if(!in_array($section, self::$sections, true)){
+			throw new \Exception('No such entity available for Admin: '.$section);
 		}
-		elseif($table === 'invoices'){
+		elseif($section === 'invoices'){
 			self::$actions[] = 'print';
-			$this->view = new InvoiceView(static::$sections, static::$path);
+			$this->view = new InvoiceView();
 		}
-		elseif($table === 'inbound'){ //TODO: correct dirty hack
+		elseif($section === 'cancelled_invoices'){
+			$this->entity = new Entity($this->table = 'invoices');
+		}
+		elseif($section === 'inbound'){ //TODO: correct dirty hack
 			CrudView::$delete = false;
 		}
 	}
 	function get(){
 		$this->table !== 'invoices' ?: $this->filter = ['cancelled'=>'No'];
-		if($this->table === 'invoices' && $this->action === 'print' && $this->id){
-			$this->view->showInvoice($this->entity, $this->id)->output();
+		Path::getParam('section') !== 'cancelled_invoices' ?: $this->filter = ['cancelled'=>'yes'];
+		if($this->table === 'invoices' && Path::getParam('action') === 'print' && Path::getParam('id')){
+			$this->view->showInvoice($this->entity, Path::getParam('id'))->output();
 		}
 		else{
 			parent::get();

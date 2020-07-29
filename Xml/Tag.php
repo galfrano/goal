@@ -143,12 +143,12 @@ class Tag{
 		self::$tab++;
 		foreach($this->children as $child){
 			if(is_object($child)){
-				$nl ?: $nl = true;
+				$nl || $nl = true;
 				$string .= "\n".(string) $child;}
 			else{
 				$string .= $child;}}
 		self::$tab--;
-		!$nl ?: $string .= "\n".$this->tab();
+		!$nl || $string .= "\n".$this->tab();
 		return $string;}
 
 	private function attr(){

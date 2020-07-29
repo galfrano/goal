@@ -1,7 +1,8 @@
 <?php
 
 namespace Service;
-use Model\Entity;
+use \Model\Entity;
+use \Xml\Tag;
 /*
 interface UserInterface{
 	static function i();
@@ -34,14 +35,18 @@ class User /*implements UserInterface*/{
 	static function settings($settings){
 //		self::$user['settings'] = 
 	}
+	static function updateLanguage($lang){
+		self::entity()->edit($_SESSION[self::$sessionKey]['id'], $_SESSION[self::$sessionKey]['id']);
+		$_SESSION[self::$sessionKey]['language'] = $lang;
+	}
 	static function getUserMenu(){
 		return self::getSession() ? ['user_administration', 'data_entry', 'reports'] : [] ;
 	}
 	static function getDefault(){
 		return self::getSession() ? ['data_entry', false, 1, false, false] : [] ;
 	}
-	static function encrypt($user){
-		return [self::$passwd=>password_hash($user[self::$passwd], \PASSWORD_DEFAULT)]+$user;
+	static function encrypt($passwd){
+		return password_hash($passwd, \PASSWORD_DEFAULT);
 	}
 	static function logout(){
 		return $_SESSION[self::$sessionKey] = false;
