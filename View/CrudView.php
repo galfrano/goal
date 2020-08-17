@@ -6,8 +6,6 @@ class CrudView extends AbstractView{
 
 	public $session;
 
-	protected static $urlMap = ['page'=>2, 'action'=>3, 'id'=>4];
-
 	public static $delete = true, $edit = true;
 
 	function showList($entity, $page = 1, $search = []){
@@ -17,18 +15,21 @@ class CrudView extends AbstractView{
 		$hRow = $table->tr();
 		$catalogs = $entity->getParents();
 		foreach($entity->fields as $column){
-			$hRow->th()->say($column);}
+			$hRow->th()->say($column);
+		}
 		$hRow->th(['class'=>'action'])->say('action');
 		foreach($entity->getList($page, $search) as $line){
 			$row = $table->tr();
 			foreach($line as $col => $value){
-				$row->td()->text(key_exists($col, $catalogs) ? $catalogs[$col][$value] : $value);}
+				$row->td()->text(key_exists($col, $catalogs) ? $catalogs[$col][$value] : $value);
+			}
 			$td = $row->td(['class'=>'actions']);
 			static::$edit && $td->a(['href'=>Path::getUrl(['action'], ['edit']).$line[$entity->pk], 'class'=>'btn btn-info btn-xs'])->say('edit');
-			static::$delete && $td->form(['method'=>'post', 'action'=>Path::getUrl().'delete/'.$line[$entity->pk]])->button(['class'=>'btn btn-danger btn-xs', 'name'=>'delete', 'value'=>1])->say('delete');}
-		$pager = $div->div(['class'=>'pager']);
-		for($p = 1, $pages = $entity->pages(); $p <= $pages; $pager->a(['class'=>'btn btn-xs btn-'.($page == $p ? 'default active' : 'primary'), 'href'=>Path::getUrl(['page'], [$p])])->text($p++));
-		return $this;}
+			static::$delete && $td->form(['method'=>'post', 'action'=>Path::getUrl().'delete/'.$line[$entity->pk]])->button(['class'=>'btn btn-danger btn-xs', 'name'=>'delete', 'value'=>1])->say('delete');
+		}
+		self::pager($div->div(['class'=>'pager']), $entity->pages(), $page);
+		return $this;
+	}
 
 	function showUpdateForm($entity, $id, $children = []){
 //die('??');

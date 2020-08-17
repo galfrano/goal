@@ -6,7 +6,7 @@ class Entity{
 
 	protected $pdoh, $id, $fieldExceptions = [];
 
-	public $schema, $tn, $rpp = 20, $columns = '*';
+	public $schema, $tn, $rpp = 20, $columns = '*', $where = [], $tokens = [];
 
 	function __construct($table){
 		$this->tn = $table;
@@ -23,8 +23,8 @@ class Entity{
 		$this->columns = $columns;
 		return $this;
 	}
-	function getList($page = 1, $filters = [], $callback = false){
-		return $this->db->query('select SQL_CALC_FOUND_ROWS '.$this->columns.' from '.$this->tn.$this->filters($filters).$this->page($page), $filters)->fetchAll($callback);
+	function getList($page = 1, $filters = []/*, $callback = false*/){
+		return $this->db->query('select SQL_CALC_FOUND_ROWS '.$this->columns.' from '.$this->tn.$this->filters($filters).$this->page($page), $this->tokens)->fetchAll(/*$callback*/);
 	}
 	private function page($page){
 		return is_numeric($page) && $this->rpp > 0 ? ' limit '.(($this->rpp*$page)-$this->rpp).', '.$this->rpp : '' ;
@@ -64,15 +64,23 @@ class Entity{
 		return empty($this->schema['children'][$childName]) ?: new self($childName);
 	}
 
-	protected function filters(&$filters){
-		$where = [];
-		foreach($filters as $field=>$value){
-			!key_exists($field, $this->schema['columns']) ?: $where[] = $field;
+	protected function filters($filters){
+		if($filters){
+			foreach($filters as $field=>$value){
+				$this->filter($field, $value);
+			}
 		}
-		$filters = array_values($filters);
-		return !count($where) ? '' : ' where '.implode('=? and ', $where).'=?';
+		return count($this->where) ? ' where '.implode(' AND ', $this->where) : '' ;
 	}
-
+	//TODO: consider making public
+	protected function filter($column, $value, $operator = '='){
+		if(key_exists($column, $this->schema['columns'])){
+			$this->where[] = ' '.$column.$operator.'? ';
+			$this->tokens[] = $value;
+		}
+		return $this;
+	}
+	//TODO: escape html
 	function add($post){
 		$start = $this->db->start();
 		$columnSchema = $this->schema['columns'];
@@ -80,7 +88,7 @@ class Entity{
 		$columns = array_keys($columnSchema);
 		$tokens = [];
 		foreach($columns as $column){
-			$tokens[] = key_exists($column, $post) ? $post[$column] : NULL ;
+			$tokens[] = key_exists($column, $post) ? htmlentities($post[$column]) : NULL ;
 		}
 		$id = $this->db->query('insert into '.$this->tn.' ('.implode(', ', $columns).') values ('.substr(str_repeat('?, ', count($columns)), 0, -2).')', $tokens)->id();
 		foreach($this->schema['children'] as $child=>$relation){
@@ -109,7 +117,7 @@ class Entity{
 		$tokens = [];
 		foreach($columns as $k => $column){
 			if(key_exists($column, $post)){
-				$tokens[] = $post[$column];
+				$tokens[] = htmlentities($post[$column]);
 			}
 			else{
 				unset($columns[$k]);

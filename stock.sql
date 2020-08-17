@@ -160,6 +160,8 @@ insert into users (email, passwd, role) values ('dariol@agavespirits.eu', '$2y$1
 insert into users (email, passwd, role) values ('galfrano@gmail.com', '$2y$10$8qkRTbwzdI/gWHIKwW6gBO1Xr4R.SXZ07aulG87g4f1JNzOHpihbS', 'Administrator');
 
 alter table users add language enum('es', 'en', 'cs') not null default 'es' after role;
+alter table outbound add comments text null after qty;
+
 
 create user 'stock'@'localhost' identified by 'stock';
 grant all privileges on stock.* TO 'stock'@'localhost';
@@ -199,4 +201,32 @@ alter table customers add phone_number varchar(127) null after business_name,
 delete from invoice_prices; delete from invoice_lines; delete from invoices;
 */
 
+| categories         |
+| customers          |
+| groups             |
+| inbound            |
+| invoice_lines      |
+| invoice_prices     |
+| invoices           |
+| outbound           |
+| prices             |
+| product_relocation |
+| products           |
+| sales              |
+| user_groups        |
+| users              |
+| warehouses
 
+
+category id, customer id, invoice, occurrence,
+
+create view sales2 as 
+select invoices.occurence, users.email as user, customers.name as customer, invoices.payment_method, warehouses.name as warehouse, products.name as product, invoice_lines.amount, invoice_prices.price
+from invoices
+left join invoice_lines on invoices.id=invoice_lines.invoice
+join users on users.id = invoices.user
+join customers on customers.id=invoices.customer
+join warehouses on warehouses.id=invoices.warehouse 
+join products on products.id=invoice_lines.product
+join invoice_prices on invoice_prices.invoice_line=invoice_lines.id
+where invoices.cancelled='No';

@@ -10,7 +10,7 @@ class Pdoh{
 	protected static $pdo = [], $transaction = [];
 
 	function __construct(){
-		key_exists(\Configuration\D, self::$pdo) ?: self::$pdo[\Configuration\D] = new \PDO('mysql:host='.\Configuration\H.';dbname='.\Configuration\D, \Configuration\U, \Configuration\P);
+		key_exists(\Configuration\D, self::$pdo) || self::$pdo[\Configuration\D] = new \PDO('mysql:host='.\Configuration\H.';dbname='.\Configuration\D, \Configuration\U, \Configuration\P);
 		$this->dbi = \Configuration\D;}
 
 	//throws exception
@@ -23,7 +23,7 @@ class Pdoh{
 	//use 2: $stmt = $pdoh->query($query, false); $stmt()->execute($tokens)->fetchAll();
 	function query($query, $tokens = []){
 		$this->stmt[] = self::$pdo[$this->dbi]->prepare($query);
-		($bool = is_bool($tokens)) ? list($c, $this->cstmt) = [count($this->stmt)-1, -1] : end($this->stmt)->execute((is_array($tokens) ? $tokens : [$tokens])) or self::kill(end($this->stmt), $tokens);
+		($bool = is_bool($tokens)) ? list($c, $this->cstmt) = [count($this->stmt)-1, -1] : end($this->stmt)->execute((is_array($tokens) ? array_values($tokens) : [$tokens])) or self::kill(end($this->stmt), $tokens);
 		return !$bool ? $this : function()use($c){
 			$this->cstmt = $c;
 			return $this;};}

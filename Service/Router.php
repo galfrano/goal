@@ -14,6 +14,7 @@ class Router{
 		'data_entry'=>'Application\DataEntryController',
 		'reports'=>'Application\ReportsController',
 		'user_administration'=>'Controller\UserAdminController',
+		'reports2'=>'Application\Reports2Controller',
 	];
 	function __construct(){
 		$this->user = !empty($_POST['logout']) ? User::i()->logout() : User::i()->getSession() ;

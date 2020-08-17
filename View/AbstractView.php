@@ -7,13 +7,13 @@ use \Service\Path;
 abstract class AbstractView implements ViewInterface{
 
 	protected $html, $doctype, $dom;
-	protected static $urlMap;
+	protected static $languages = ['en', 'es', 'cs'];
 
 	public function __construct($tpl = false){
 		is_string($tpl) ?: $tpl = \Configuration\TPL;
 		list($this->doctype, $this->html) = Loader::tags(file_get_contents(__DIR__.'/html/'.$tpl.'.html'));
 		$this->setAssetsPath();
-		$this->menuBar(User::getUserMenu());
+		($controllers = User::getUserMenu()) && $this->menuBar($controllers);
 	}
 	protected static function template($template){
 		return current(Loader::tags(file_get_contents(__DIR__.'/html/'.$template.'.html')));
@@ -36,7 +36,12 @@ abstract class AbstractView implements ViewInterface{
 	private function menuBar($controllers){
 		$bar = new Tag(['div', 'class'=>'topbar']);
 		$menu = $bar->div();
-		$controllers && $bar->div()->form(['method'=>'post'])->button(['name'=>'logout', 'value'=>1, 'class'=>'btn btn-warning'])->say('logout');
+		$select = $bar->div()->form(['method'=>'post', 'id'=>'changeLanguage'])->select(['name'=>'changeUserLanguage', 'id'=>'chlang', 'class'=>'']);
+		$select->option()->say('change_language');
+		array_walk(self::$languages, function($lang)use($select){
+			$select->option(['value'=>$lang])->say($lang);
+		});
+		$bar->div()->form(['method'=>'post'])->button(['name'=>'logout', 'value'=>1, 'class'=>'btn btn-warning'])->say('logout');
 		for($x = 0, $c = count($controllers); $x<$c; $menu->div()->a(['href'=>\Configuration\MAIN_URL.'/'.$controllers[$x]]+self::isActive('controller', $controllers[$x]))->say($controllers[$x++]));
 		$this->html->get('body')->text($bar);
 	}
@@ -66,6 +71,9 @@ abstract class AbstractView implements ViewInterface{
 			}
 		}
 		return $table;
+	}
+	protected static function pager($pager /*Tag*/, $pages, $page){
+		for($p = 1; $p <= $pages; $pager->a(['class'=>'btn btn-xs btn-'.($page == $p ? 'default active' : 'primary'), 'href'=>Path::getUrl(['page'], [$p])])->text($p++));
 	}
 	public function load($data){
 		foreach($data as $id=>$pop){

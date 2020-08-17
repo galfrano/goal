@@ -36,11 +36,11 @@ class User /*implements UserInterface*/{
 //		self::$user['settings'] = 
 	}
 	static function updateLanguage($lang){
-		self::entity()->edit($_SESSION[self::$sessionKey]['id'], $_SESSION[self::$sessionKey]['id']);
+		self::entity()->edit(['language'=>$lang], $_SESSION[self::$sessionKey]['id']);
 		$_SESSION[self::$sessionKey]['language'] = $lang;
 	}
 	static function getUserMenu(){
-		return self::getSession() ? ['user_administration', 'data_entry', 'reports'] : [] ;
+		return self::getSession() ? ['user_administration', 'data_entry', 'reports', 'reports2'] : [] ;
 	}
 	static function getDefault(){
 		return self::getSession() ? ['data_entry', false, 1, false, false] : [] ;

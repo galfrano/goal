@@ -45,4 +45,8 @@
 'category'=>'Categor&iacute;a',
 'groups'=>'Groups',
 'outbound'=>'Salidas de Producto',
+'change_language'=>'Cambiar lenguaje',
+'es'=>'Espa&ntilde;ol',
+'en'=>'Ingl&eacute;s',
+'cs'=>'Checo',
 ];

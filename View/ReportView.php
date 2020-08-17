@@ -3,8 +3,6 @@ namespace View;
 use \Xml\Tag;
 class ReportView extends AbstractView{
 
-	protected static $urlMap = ['page'=>2, 'action'=>3, 'id'=>4];
-
 	function showSales($data){
 		$wrapper = $this->html->get('body')->div(['class'=>'wrapper']);
 		if($data){

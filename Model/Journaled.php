@@ -10,11 +10,16 @@ class Journaled extends Entity{
 
 	function __construct($table){
 		parent::__construct($table);
-		$this->inactive = array_search('tinyint(1)', $this->schema['columns']);
+		/*$this->inactive = array_search('tinyint(1)', $this->schema['columns']);
 		list($this->createrBy, $this->modifiedBy) = array_keys(array_filter($this->schema['parents'], function($parent){
 			return key_exists(Configuration\USER['usersTable'], $parent);
 		}));
-		list($this->created, $this->modified) = array_keys($this->schema['columms'], 'timestamp');
+		list($this->created, $this->modified) = array_keys($this->schema['columms'], 'timestamp');*/
+	}
+	function setRange($field, $from = false, $to = false){
+		$from && $this->filter($field, $from, '>=');
+		$to && $this->filter($field, $from, '=<');
+		return $this;
 	}
 /*
 	function getList($page = 1, $filters = [], $callback = false){
@@ -31,7 +36,7 @@ class Journaled extends Entity{
 	}
 */
 //	function getByUser
-	function get($id, $children = [], $default = true){
+/*	function get($id, $children = [], $default = true){
 		$this->columns = '*';
 		parent::get($id, $children, $default);
 	}
@@ -48,6 +53,6 @@ class Journaled extends Entity{
 	}
 	function delete($id){
 		empty($this->inactive) ? parent::delete($id) : parent::edit([$this->inactive=>1], $id);
-	}
+	}*/
 }
 
