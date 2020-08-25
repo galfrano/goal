@@ -199,7 +199,7 @@ alter table customers add phone_number varchar(127) null after business_name,
 
 
 delete from invoice_prices; delete from invoice_lines; delete from invoices;
-*/
+
 
 | categories         |
 | customers          |
@@ -219,9 +219,22 @@ delete from invoice_prices; delete from invoice_lines; delete from invoices;
 
 
 category id, customer id, invoice, occurrence,
+*/
+create view sales3 as 
+select product, sum(cash) total from (select product, product_id, (amount*price) cash from 
+  (select invoices.occurence, users.email as user, customers.name as customer, invoices.payment_method, warehouses.name as warehouse, products.name as product, products.id as product_id, invoice_lines.amount, invoice_prices.price
+from invoices
+left join invoice_lines on invoices.id=invoice_lines.invoice
+join users on users.id = invoices.user
+join customers on customers.id=invoices.customer
+join warehouses on warehouses.id=invoices.warehouse 
+join products on products.id=invoice_lines.product
+join invoice_prices on invoice_prices.invoice_line=invoice_lines.id
+where invoices.cancelled='No') dt1) dt2 group by product_id;
+
 
 create view sales2 as 
-select invoices.occurence, users.email as user, customers.name as customer, invoices.payment_method, warehouses.name as warehouse, products.name as product, invoice_lines.amount, invoice_prices.price
+select invoices.occurence, users.email as user, customers.name as customer, invoices.payment_method, warehouses.name as warehouse, products.name as product, products.id as product_id, invoice_lines.amount, invoice_prices.price
 from invoices
 left join invoice_lines on invoices.id=invoice_lines.invoice
 join users on users.id = invoices.user
@@ -230,3 +243,6 @@ join warehouses on warehouses.id=invoices.warehouse
 join products on products.id=invoice_lines.product
 join invoice_prices on invoice_prices.invoice_line=invoice_lines.id
 where invoices.cancelled='No';
+
+create view stock as
+select products.name product, warehouse.name warehouse, 

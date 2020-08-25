@@ -18,7 +18,7 @@ class Journaled extends Entity{
 	}
 	function setRange($field, $from = false, $to = false){
 		$from && $this->filter($field, $from, '>=');
-		$to && $this->filter($field, $from, '=<');
+		$to && $this->filter($field, $to, '<=');
 		return $this;
 	}
 /*

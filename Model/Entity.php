@@ -23,8 +23,8 @@ class Entity{
 		$this->columns = $columns;
 		return $this;
 	}
-	function getList($page = 1, $filters = []/*, $callback = false*/){
-		return $this->db->query('select SQL_CALC_FOUND_ROWS '.$this->columns.' from '.$this->tn.$this->filters($filters).$this->page($page), $this->tokens)->fetchAll(/*$callback*/);
+	function getList($page = 1, $filters = [], $callback = false){
+		return $this->db->query('select SQL_CALC_FOUND_ROWS '.$this->columns.' from '.$this->tn.$this->filters($filters).$this->page($page), $this->tokens)->fetchAll($callback);
 	}
 	private function page($page){
 		return is_numeric($page) && $this->rpp > 0 ? ' limit '.(($this->rpp*$page)-$this->rpp).', '.$this->rpp : '' ;
@@ -46,7 +46,7 @@ class Entity{
 								$data[$prefix.'['.$field.']'] = $value;
 							}
 						});
-					}//var_dump($data);die;
+					}
 					else{
 						$data[$camel] = (new self($child))->getList(false, [$this->schema['children'][$child][$this->pk]=>$id]);
 					}
