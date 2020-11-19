@@ -31,3 +31,5 @@ table{border-spacing: 2px; border-collapse: unset;}
 .active{color:#222; background-color:#0ce3ac; border-radius:4px;}
 .active:hover{color:#222; font-weight:bold;}
 #chlang{font-size:10px; margin:10px;}
+.login{margin:0 auto; max-width:500px;}
+h1{padding:10px; text-align:center;}

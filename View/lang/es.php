@@ -49,4 +49,10 @@
 'es'=>'Espa&ntilde;ol',
 'en'=>'Ingl&eacute;s',
 'cs'=>'Checo',
+'admin'=>'Administrador',
+'sales_rep'=>'Representante de ventas',
+'from'=>'Desde',
+'to'=>'Hasta',
+'filter'=>'Filtrar',
+'summary'=>'Resumen',
 ];

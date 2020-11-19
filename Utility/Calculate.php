@@ -27,13 +27,19 @@ trait Calculate{
 		}
 		return number_format($total, 2);
 	}
-	static function groupProducts($data, $by = 'product_id', $name = 'product', $sum = 'cash'){//TODO: consider rewriting functionally
+	static function groupProducts($data, $by = 'product_id', $name = 'product', $qty = 'amount', $sum = 'cash'){//TODO: consider rewriting functionally
 		$newData = [];
 		foreach($data as $row){
-			empty($newData[$row[$by]]) ? $newData[$row[$by]] = [$name=>$row[$name], $sum=>floatval($row[$sum])] : $newData[$row[$by]][$sum] += floatval($row[$sum]);
+			if(empty($newData[$row[$by]])){
+				$newData[$row[$by]] = [$name=>$row[$name], $qty=>intval($row[$qty]), $sum=>floatval($row[$sum])] ;
+			}
+			else {
+				$newData[$row[$by]][$sum] += floatval($row[$sum]);
+				$newData[$row[$by]][$qty] += intval($row[$qty]);
+			}
 		}
 		return array_map(function($prod)use($sum){
-			$prod[$sum] = number_format($prod[$sum], 2);
+			$prod[$sum] = number_format($prod[$sum], 2);//TODO: correct! floats should be handled by translator
 			return $prod;
 		}, $newData);
 	}

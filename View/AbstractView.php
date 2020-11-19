@@ -33,6 +33,7 @@ abstract class AbstractView implements ViewInterface{
 	protected static function isActive($k, $v){
 		return Path::getParam($k) === $v ? ['class'=>'active'] : [] ;
 	}
+//TODO: consider making public
 	private function menuBar($controllers){
 		$bar = new Tag(['div', 'class'=>'topbar']);
 		$menu = $bar->div();
@@ -44,6 +45,9 @@ abstract class AbstractView implements ViewInterface{
 		$bar->div()->form(['method'=>'post'])->button(['name'=>'logout', 'value'=>1, 'class'=>'btn btn-warning'])->say('logout');
 		for($x = 0, $c = count($controllers); $x<$c; $menu->div()->a(['href'=>\Configuration\MAIN_URL.'/'.$controllers[$x]]+self::isActive('controller', $controllers[$x]))->say($controllers[$x++]));
 		$this->html->get('body')->text($bar);
+	}
+//TODO
+	public function toolBar($forms){
 	}
 	public function subMenuBar($sections){
 		$bar = $this->html->get('body')->div(['class'=>'sidebar']);

@@ -21,6 +21,10 @@ class Journaled extends Entity{
 		$to && $this->filter($field, $to, '<=');
 		return $this;
 	}
+	function authorize($id, $cmp = ['user', null]){
+		$row = $this->get($id);
+		//return ($user && ($row[$cmp[0]] === $cmp)) || ($group && ($row[] === $group));
+	}
 /*
 	function getList($page = 1, $filters = [], $callback = false){
 		$this->inactive && $filters[$this->inactive] = 0;

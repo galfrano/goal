@@ -1,7 +1,7 @@
 <?php
 namespace View;
 use \Xml\Tag;
-class Report2View extends AbstractView{
+class Report3View extends AbstractView{
 
 	function showAllSales($total, $data, $pages, $page){
 		$div = $this->html->get('body')->div(['class'=>'wrapper']);
@@ -15,6 +15,12 @@ class Report2View extends AbstractView{
 	}
 	function showCalc($data){
 		$div = $this->html->get('body')->div(['class'=>'wrapper']);
+		$div->text($this->tableize($data));
+		return $this;
+	}
+	function showStock($data){
+		$div = $this->html->get('body')->div(['class'=>'wrapper']);
+		$div->h2()->say('stock');
 		$div->text($this->tableize($data));
 		return $this;
 	}

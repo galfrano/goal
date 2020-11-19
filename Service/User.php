@@ -18,9 +18,15 @@ class User /*implements UserInterface*/{
 
 	private function __construct(){
 		list(static::$sessionKey, static::$settingsKey, static::$table, static::$user, static::$passwd) = array_values(\Configuration\USER);
+		self::handlePost();
+		!empty($_SESSION[self::$sessionKey]['language']) && Tag::setLanguage($_SESSION[self::$sessionKey]['language']);
 	}
 	static function i(){
 		return is_null(self::$i) ? (self::$i = new static) : self::$i;
+	}
+	static function handlePost(){
+		!empty($_POST['changeUserLanguage']) && self::updateLanguage($_POST['changeUserLanguage']);;
+		!empty($_POST['logout']) && self::logout();
 	}
 	private static function entity(){
 		return is_null(self::$entity) ? (self::$entity = new Entity(self::$table)) : self::$entity;
@@ -33,14 +39,15 @@ class User /*implements UserInterface*/{
 		return $_SESSION[self::$sessionKey] = !$user || !password_verify($password, $user[self::$passwd]) ? false : $user ;
 	}
 	static function settings($settings){
-//		self::$user['settings'] = 
+//		self::$user['settings'] =
 	}
 	static function updateLanguage($lang){
 		self::entity()->edit(['language'=>$lang], $_SESSION[self::$sessionKey]['id']);
 		$_SESSION[self::$sessionKey]['language'] = $lang;
 	}
 	static function getUserMenu(){
-		return self::getSession() ? ['user_administration', 'data_entry', 'reports', 'reports2'] : [] ;
+
+		return self::getSession() ? ['user_administration', 'data_entry', 'reports', 'warehouse'] : [] ;
 	}
 	static function getDefault(){
 		return self::getSession() ? ['data_entry', false, 1, false, false] : [] ;
