@@ -47,7 +47,7 @@ class User /*implements UserInterface*/{
 	}
 	static function getUserMenu(){
 
-		return self::getSession() ? ['user_administration', 'data_entry', 'reports', 'warehouse'] : [] ;
+		return self::getSession() ? ['user_administration', 'data_entry', 'warehouse', 'invoices', 'reports'] : [] ;
 	}
 	static function getDefault(){
 		return self::getSession() ? ['data_entry', false, 1, false, false] : [] ;

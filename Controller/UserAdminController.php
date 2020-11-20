@@ -18,26 +18,17 @@ class UserAdminController extends CrudController{
 
 /*	private $userKey = 'user', $pk = 'id', $session;
 */
-	function preRoute(){
-		Path::getParam('section') === 'users' && empty(Path::getParam('action')) && $this->entity->setColumns('email, role, language, id');
-	}
-	static function getSubMenu(){
-		return self::$sections;
+	function isAvailable($section){
+		parent::isAvailable($section);
+		$this->entity = new Entity($this->table = $section);
+		$section === 'users' && empty(Path::getParam('action')) && $this->entity->setColumns('email, role, language, id');
 	}
 	protected function post($post){
-		if(!empty($post['passwd'])){
-			if(empty($post['passwd'][0]) && empty($post['passwd'][1])){
-				unset($post['passwd']);
-			}
-			else{
-				$post['passwd'] = self::validatePassword($post['passwd']);
-			}
-//			var_dump($post); die;
-		}
+		$post['passwd'] = self::validatePassword($post['passwd']);
 		parent::post($post);
 	}
 	protected function validatePassword($passwd){
-		($passwd[0] === $passwd[1] && strlen($passwd[0]) >= 6) || self::kill('Password too short or not matching');
+		(!empty($passwd[0]) && !empty($passwd[1]) && $passwd[0] === $passwd[1] && strlen($passwd[0]) >= 6) || self::kill('Password too short or not matching');
 		return User::encrypt($passwd[0]);
 	}
 }

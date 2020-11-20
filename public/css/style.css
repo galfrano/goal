@@ -1,7 +1,7 @@
 body{margin:0;}
 .wrapper, .form-wrapper{width:80%;}
 .wrapper, .sidebar, .form-wrapper{display:inline-block; vertical-align:top;}
-.sidebar{padding:0 30px;}
+.sidebar{padding:0 30px; width:250px;}
 .sidebar a{padding:10px 20px; display:block;}
 .wrapper div, .form-wrapper div{padding:10px 0;}
 button{margin:0 5px;}

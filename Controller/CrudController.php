@@ -25,12 +25,12 @@ abstract class CrudController implements Routeable{
 	protected $table, $action, $entity, $view, $childrenList = [], $filter = [];
 
 	function __construct(){
-		//FIXME: add security
+		$this->isAvailable(Path::getParam('section'));
 		!empty($this->entity) || $this->entity = new Entity($this->table = Path::getParam('section'));
 		key_exists($this->table, static::$children) && $this->childrenList = static::$children[$this->table];
 		!empty($this->view) || $this->view = new CrudView();
 		!empty($sections = static::getSubMenu()) && $this->view->subMenuBar($sections);
-		method_exists($this, 'preRoute') && $this->preRoute();
+		//method_exists($this, 'preRoute') && $this->preRoute();
 		!empty($_POST) ? $this->post($_POST) : $this->get();
 	}
 	protected function get(){
@@ -42,6 +42,15 @@ abstract class CrudController implements Routeable{
 		}
 		elseif(Path::getParam('action') === 'edit' && Path::getParam('id')){
 			$this->view->showUpdateForm($this->entity, Path::getParam('id'), $this->childrenList)->output();
+		}
+	}
+	static function getSubMenu(){
+		return static::$sections;
+	}
+	//can be overwritten for initialization
+	protected function isAvailable($section){
+		if(!in_array($section, static::$sections, true)){
+			throw new \Exception('No such entity available: '.$section);
 		}
 	}
 	// handles delete, new, update

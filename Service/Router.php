@@ -12,6 +12,7 @@ class Router{
 
 	protected static $controllers = [
 		'warehouse'=>'Application\WarehouseController',
+		'invoices'=>'Application\InvoicesController',
 		'data_entry'=>'Application\DataEntryController',
 		'reports'=>'Application\ReportsController',
 		'user_administration'=>'Controller\UserAdminController',
